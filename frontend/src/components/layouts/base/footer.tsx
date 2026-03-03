@@ -76,19 +76,23 @@ export function Footer() {
 
 const LINKS = [
 	{
-		title: 'Vara Memecoins',
+		title: 'Tokenator - Vara Token Launcher',
 		menu: [
 			{
-				title: 'All Memecoins',
+				title: 'All Tokens',
 				url: '/tokens',
 			},
 			{
-				title: 'My Coins – My Rules',
+				title: 'My Tokens',
 				url: '/tokens/my',
 			},
 			{
-				title: 'Memecoin Creator',
+				title: 'Create Token',
 				url: '/tokens/create',
+			},
+			{
+				title: 'List on RivrDEX',
+				url: 'https://app.rivrdex.com',
 			},
 		],
 	},

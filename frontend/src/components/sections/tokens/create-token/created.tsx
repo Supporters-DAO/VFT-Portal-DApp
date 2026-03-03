@@ -14,7 +14,9 @@ export const Created = ({ name, image }: Props) => {
 	return (
 		<>
 			<AnimationCoins />
-			<h3 className="text-center uppercase max-sm:text-center max-sm:text-[16px]">Memecoin is created</h3>
+			<h3 className="text-center uppercase max-sm:text-center max-sm:text-[16px]">
+				Token created
+			</h3>
 			<div className="flex flex-col gap-5 font-poppins max-sm:text-center">
 				<div className="mx-auto flex flex-col items-center justify-center gap-3 rounded-[42px] border-2 border-[#2E3B55] bg-[#172542] p-7 max-sm:p-5">
 					<div className="font-ps2p uppercase text-primary max-sm:text-[10px]">{name}</div>
@@ -34,13 +36,13 @@ export const Created = ({ name, image }: Props) => {
 				</div>
 
 				<p className="mx-auto w-2/3 text-center max-sm:w-full">
-					You will find your memecoin in the portfolio. Now you can share your
-					art with friends
+					You will find your token in the portfolio. Now you can share it with
+					your community.
 				</p>
 				<div className="mt-7 flex gap-3 font-ps2p">
 					<Link href="/tokens/my" className="mx-auto">
 						<button className="rounded-lg bg-primary px-15 py-3 text-black max-sm:text-[12px]">
-							My Memecoins
+							My Tokens
 						</button>
 					</Link>
 				</div>

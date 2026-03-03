@@ -24,7 +24,7 @@ export function AllCoins({ className }: Props) {
 			)}
 		>
 			<h2 className="text-center text-[22px] leading-none text-[#242424] sm:text-[32px]">
-				All memecoins
+				All tokens
 			</h2>
 			<div>
 				<input
@@ -86,7 +86,7 @@ export function AllCoins({ className }: Props) {
 				</ul>
 				<div className="mt-4 md:mt-6">
 					<Link href="/tokens" className="btn btn--white w-full">
-						Show all
+						Browse all tokens
 					</Link>
 				</div>
 			</div>

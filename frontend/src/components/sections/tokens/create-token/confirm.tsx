@@ -87,7 +87,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 	return (
 		<div className="flex flex-col items-center gap-3 overflow-hidden">
 			<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
-				Memecoin Creator
+				Create Token
 			</h1>
 			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px]">
 				<div className="mx-auto w-2/5 max-sm:w-[70%]">

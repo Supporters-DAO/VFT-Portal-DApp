@@ -31,10 +31,11 @@ const siteConfig = {
 
 export const metadata: Metadata = {
 	title: {
-		default: siteConfig.name,
+		default: 'Tokenator - Launch Any Token on Vara',
 		template: `%s | ${siteConfig.name}`,
 	},
-	description: 'Description',
+	description:
+		'Deploy any fungible token on Vara Network in minutes - no code needed. Memecoins, utility tokens, DAO tokens, rewards. Free to launch, list on RivrDEX.',
 }
 
 export default function RootLayout({

@@ -179,26 +179,25 @@ export function AboutCreateSlider() {
 }
 
 const dataBullets = [
-	'Create a name',
-	'Set symbol & decimals',
-	'Add an image link',
+	'Give it a name',
+	'Set symbol, supply & decimals',
+	'Add a logo',
 ]
 
 const dataImages: [StaticImageData[], ReactNode][] = [
 	[
 		[Slide1, Slide1x2, Slide1Webp, Slide1x2Webp],
-		'Dream up a catchy moniker, as viral as your currency! Craft it to resonate, embedding in the human psyche like the ultimate viral strain.',
+		"Pick a name that fits your vision - whether it's a community meme, a project brand, or a DAO governance token. Something people will remember.",
 	],
 	[
 		[Slide2, Slide2x2, Slide2Webp, Slide2x2Webp],
-		'Pick a symbol that screams "cool" and decide on decimals like a pro. This is where the magic happens – so choose wisely!',
+		'Set your ticker symbol, initial supply, and decimal precision. These parameters are baked into your smart contract - choose what works for your use case.',
 	],
 	[
 		[Slide3, Slide3x2, Slide3Webp, Slide3x2Webp],
 		<>
-			Find an image that&apos;s as iconic as your memecoin. Whether it&apos;s
-			a&nbsp;laughing emoji or a wacky doodle, make it stand out in
-			the&nbsp;crowd!
+			Upload a logo that represents your token. A clear, recognizable icon
+			makes your token easy to spot on wallets and DEX listings.
 		</>,
 	],
 ]

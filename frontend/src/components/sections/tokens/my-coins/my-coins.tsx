@@ -77,7 +77,7 @@ export const MyCoins = () => {
 			<DataTable
 				table={table}
 				onRowClick={handleRowClick}
-				nameTable="My Coins - My Rules"
+				nameTable="My Tokens"
 				setGlobalFilter={setGlobalFilter}
 				globalFilter={globalFilter}
 				total={totalCoins}

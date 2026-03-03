@@ -9,7 +9,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -45,7 +44,7 @@ export function HeaderMenu({ className }: Props) {
 								asChild
 								className={cn(pathname === '/tokens/create' && 'text-primary')}
 							>
-								<Link href="/tokens/create">Memecoins Creator</Link>
+								<Link href="/tokens/create">Create Token</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 
@@ -53,7 +52,7 @@ export function HeaderMenu({ className }: Props) {
 								asChild
 								className={cn(pathname === '/tokens/my' && 'text-primary')}
 							>
-								<Link href="/tokens/my">My Coins – My Rules</Link>
+								<Link href="/tokens/my">My Tokens</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 						</>
@@ -62,7 +61,17 @@ export function HeaderMenu({ className }: Props) {
 						asChild
 						className={cn(pathname === '/tokens' && 'text-primary')}
 					>
-						<Link href="/tokens">All Memecoins</Link>
+						<Link href="/tokens">All Tokens</Link>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem asChild>
+						<Link
+							href="https://app.rivrdex.com"
+							target="_blank"
+							rel="noreferrer"
+						>
+							List on RivrDEX
+						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

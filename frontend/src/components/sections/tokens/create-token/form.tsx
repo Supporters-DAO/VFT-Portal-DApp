@@ -82,7 +82,7 @@ export const CreateForm = () => {
 			<BackButton />
 			<div className="flex flex-col items-center gap-3 max-sm:w-full">
 				<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
-					Memecoin Creator
+					Create Token
 				</h1>
 				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-3 max-sm:w-full max-sm:rounded-[20px]">
 					<div className="mx-auto w-2/5 max-sm:mt-5 max-sm:w-[70%]">
@@ -104,7 +104,7 @@ export const CreateForm = () => {
 							</li>
 						</ol>
 					</div>
-					<h3 className="text-center uppercase">Memecoin Details</h3>
+					<h3 className="text-center uppercase">Token Details</h3>
 					<form
 						className="flex flex-col gap-5 font-poppins"
 						onSubmit={handleSubmit(onSubmit)}
@@ -116,7 +116,7 @@ export const CreateForm = () => {
 								render={({ field, fieldState: { error } }) => (
 									<Input
 										{...field}
-										label="Memecoin’s Name"
+										label="Token Name"
 										placeholder="My Vara Coin"
 										error={error?.message}
 									/>
@@ -199,7 +199,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Initial Supply"
-											placeholder="Initial number of your memecoins"
+											placeholder="Initial number of your tokens"
 											type="number"
 											onChange={(e) => {
 												const value = e.target.value
@@ -223,7 +223,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Max Supply"
-											placeholder="Total number of your memecoins"
+											placeholder="Total number of your tokens"
 											error={
 												touchedFields.max_supply || errors.max_supply
 													? errors.max_supply?.message || error?.message
@@ -329,7 +329,7 @@ export const CreateForm = () => {
 										<InputArea
 											{...field}
 											label="Description"
-											placeholder="Tell people more about your memecoin"
+											placeholder="Tell people more about your token"
 											error={error?.message}
 										/>
 										<span

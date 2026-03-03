@@ -189,10 +189,10 @@ export function MobileList({ data }: ContentLayoutProps) {
 				})
 			) : (
 				<div className="flex flex-col gap-2 rounded-md bg-[#1D2C4B] px-3 py-5 text-center text-[20px]">
-					<h3 className="font-silkscreen">No traces of memecoin</h3>
+					<h3 className="font-silkscreen">No matching tokens</h3>
 					<p className="text-[16px] text-white/[80%]">
-						Either it`s hiding like a pro or it`s just too cool for our search
-						bar
+						Nothing matched your search yet. Try a different token name, symbol,
+						or address.
 					</p>
 				</div>
 			)}
