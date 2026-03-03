@@ -23,7 +23,7 @@ const executeTransaction = async (
 	transaction.withValue(BigInt(1e12))
 	await transaction.calculateGas(false, 100)
 
-	const { msgId, blockHash, response, txHash } = await transaction.signAndSend()
+	const { msgId, blockHash, response } = await transaction.signAndSend()
 
 	console.log(`msg included in block ${blockHash}. Message id: ${msgId}`)
 

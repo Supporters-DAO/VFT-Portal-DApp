@@ -56,20 +56,26 @@ type ITokenResponse = {
 	}
 }
 
-export default async function Page({
-	params: { id },
-}: {
-	params: { id: string }
-}) {
-	const data = (await getData(id)) as ITokenResponse
+export default async function Page(
+    props: {
+        params: Promise<{ id: string }>
+    }
+) {
+    const params = await props.params;
 
-	if (!data || !data.data.coinById) return notFound()
+    const {
+        id
+    } = params;
 
-	const {
+    const data = (await getData(id)) as ITokenResponse
+
+    if (!data || !data.data.coinById) return notFound()
+
+    const {
 		data: { coinById },
 	} = data
 
-	return (
+    return (
 		<div className="container">
 			<Token token={coinById} />
 		</div>
