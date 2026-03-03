@@ -178,11 +178,7 @@ export function AboutCreateSlider() {
 	)
 }
 
-const dataBullets = [
-	'Give it a name',
-	'Set symbol, supply & decimals',
-	'Add a logo',
-]
+const dataBullets = ['Give it a name', 'Set symbol & decimals', 'Add a logo']
 
 const dataImages: [StaticImageData[], ReactNode][] = [
 	[
@@ -196,8 +192,8 @@ const dataImages: [StaticImageData[], ReactNode][] = [
 	[
 		[Slide3, Slide3x2, Slide3Webp, Slide3x2Webp],
 		<>
-			Upload a logo that represents your token. A clear, recognizable icon
-			makes your token easy to spot on wallets and DEX listings.
+			Upload a logo that represents your token. A clear, recognizable icon makes
+			your token easy to spot on wallets and DEX listings.
 		</>,
 	],
 ]

@@ -252,9 +252,6 @@ const config: Config = {
 			},
 		},
 	},
-	corePlugins: {
-		container: false,
-	},
 	plugins: [
 		require('tailwindcss-animate'),
 		require('@tailwindcss/typography'),

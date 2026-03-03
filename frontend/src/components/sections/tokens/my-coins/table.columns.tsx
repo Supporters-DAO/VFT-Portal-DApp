@@ -30,7 +30,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<div className="relative flex flex-col items-center justify-center">
 				<Image
-					src={info?.row?.original?.image}
+					src={info?.row?.original?.image || '/images/no-token.png'}
 					alt={info?.row?.original?.name}
 					width={60}
 					height={60}

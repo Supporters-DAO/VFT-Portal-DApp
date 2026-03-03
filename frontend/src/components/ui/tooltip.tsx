@@ -12,21 +12,26 @@ const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 
-const TooltipContent = React.forwardRef<
-	React.ElementRef<typeof TooltipPrimitive.Content>,
-	React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, side = 'top', ...props }, ref) => (
-	<TooltipPrimitive.Content
-		ref={ref}
-		sideOffset={sideOffset}
-		side={side}
-		className={cn(
-			'z-50 overflow-hidden rounded-md bg-black/90 p-4 text-sm/6 text-white shadow-[0_0.5rem_1rem] shadow-black/25 animate-in fade-in-50 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
-			className
-		)}
-		{...props}
-	/>
-))
+function TooltipContent({
+	className,
+	sideOffset = 4,
+	side = 'top',
+	ref,
+	...props
+}: React.ComponentPropsWithRef<typeof TooltipPrimitive.Content>) {
+	return (
+		<TooltipPrimitive.Content
+			ref={ref}
+			sideOffset={sideOffset}
+			side={side}
+			className={cn(
+				'z-50 overflow-hidden rounded-md bg-black/90 p-4 text-sm/6 text-white shadow-[0_0.5rem_1rem] shadow-black/25 animate-in fade-in-50 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
+				className
+			)}
+			{...props}
+		/>
+	)
+}
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export function TooltipContainer({

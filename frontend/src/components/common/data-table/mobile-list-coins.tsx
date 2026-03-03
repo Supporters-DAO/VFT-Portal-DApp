@@ -80,7 +80,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 									<div className="flex gap-3 ">
 										<div className="flex flex-col items-center">
 											<Image
-												src={i.image}
+												src={i.image || '/images/no-token.png'}
 												key={i.id}
 												alt={''}
 												width={60}

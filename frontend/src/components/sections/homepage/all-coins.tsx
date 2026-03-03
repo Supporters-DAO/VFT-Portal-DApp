@@ -44,7 +44,7 @@ export function AllCoins({ className }: Props) {
 							>
 								<div className="relative size-10 overflow-hidden rounded-full md:size-25">
 									<Image
-										src={coin.image}
+										src={coin.image || '/images/no-token.png'}
 										alt="Coin Image"
 										fill
 										className="object-cover"

@@ -13,22 +13,14 @@ const nextConfig = {
 	reactStrictMode: true,
 	output: 'standalone',
 	webpack: (config) => {
-		config.module.rules.push({
-			test: /\.txt/,
-			type: 'asset/resource',
-			generator: {
-				filename: 'static/[hash][ext]',
-			},
-		})
-
 		// fix for:
 		// Module parse failed: 'import' and 'export' may appear only with 'sourceType: module'
-		config.resolve.alias['@varan-wallet/varan-connect$'] = require.resolve(
-			'@varan-wallet/varan-connect'
-		)
+		config.resolve.alias['@varan-wallet/varan-connect$'] =
+			require.resolve('@varan-wallet/varan-connect')
 
 		return config
 	},
+
 	images: {
 		remotePatterns: [
 			{

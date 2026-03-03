@@ -1,87 +1,82 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config '../../tailwind.config.ts';
+@import 'tailwindcss';
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
 
-  color-scheme: light dark;
-  color: #fdfdfd;
-  background: #0f1b34;
+	color-scheme: light dark;
+	color: #fdfdfd;
+	background: #0f1b34;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 
-
-  --primary: 180 255 105;
-  --contrast: 255 255 255;
-  --dark: 34 36 36;
-  --light-grey: 222 222 222;
-  --blue: 24 82 255;
-  --error: 255 1 1;
-  --placeholder: 69 66 66;
-  --text-dark: 20 20 20;
-  --theme-blue: 24 82 255;
-  --brand: 0 255 196;
-  --blue-dark: 15 27 52;
-  --blue-light: 29 44 75;
+	--primary: 180 255 105;
+	--contrast: 255 255 255;
+	--dark: 34 36 36;
+	--light-grey: 222 222 222;
+	--blue: 24 82 255;
+	--error: 255 1 1;
+	--placeholder: 69 66 66;
+	--text-dark: 20 20 20;
+	--theme-blue: 24 82 255;
+	--brand: 0 255 196;
+	--blue-dark: 15 27 52;
+	--blue-light: 29 44 75;
 }
 
-@media not all and (min-resolution: .001dpcm) {
-  img[loading="lazy"] {
-    clip-path: inset(0.5px)
-  }
+@media not all and (min-resolution: 0.001dpcm) {
+	img[loading='lazy'] {
+		clip-path: inset(0.5px);
+	}
 }
-
 
 @layer base {
-  html {
-    @apply bg-[#0F1B34]
-  }
+	html {
+		@apply bg-[#0F1B34];
+	}
 
-  .container {
-    @apply w-full max-w-[680px] lg:max-w-[1232px] px-4 mx-auto
-  }
+	.container {
+		@apply mx-auto w-full max-w-[680px] px-4 lg:max-w-[1232px];
+	}
 }
-
 
 @layer components {
-  .btn {
-    @apply inline-flex items-center justify-center px-10 py-4 md:py-6 bg-primary text-[#242424] text-[12px] md:text-[16px] leading-none cursor-pointer rounded-lg transition select-none;
-  }
+	.btn {
+		@apply inline-flex cursor-pointer select-none items-center justify-center rounded-lg bg-primary px-10 py-4 text-[12px] leading-none text-[#242424] transition md:py-6 md:text-[16px];
+	}
 
-  .btn--primary {
-    @apply bg-primary text-[#242424] hover:bg-[#98FF37] focus-visible:bg-[#98FF37] active:bg-[#86E031];
-  }
+	.btn--primary {
+		@apply bg-primary text-[#242424] hover:bg-[#98FF37] focus-visible:bg-[#98FF37] active:bg-[#86E031];
+	}
 
-  .btn--white {
-    @apply bg-[#EDEDED] text-[#242424] hover:bg-[#DEDEDF] focus-visible:bg-[#DEDEDF] active:bg-[#d1d1d2];
-  }
+	.btn--white {
+		@apply bg-[#EDEDED] text-[#242424] hover:bg-[#DEDEDF] focus-visible:bg-[#DEDEDF] active:bg-[#d1d1d2];
+	}
 
-  .btn--outline {
-    @apply bg-[#0F1B34] text-[#242424] ring-1 sm:ring-2 ring-inset ring-opacity-80 ring-current hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031];
-  }
+	.btn--outline {
+		@apply bg-[#0F1B34] text-[#242424] ring-1 ring-inset ring-current/80 hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031] sm:ring-2;
+	}
 
-  .link {
-    @apply hocus:underline underline-offset-4
-  }
+	.link {
+		@apply underline-offset-4 hocus:underline;
+	}
 
-  .link-primary {
-    @apply transition-colors text-primary hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031]
-  }
+	.link-primary {
+		@apply text-primary transition-colors hover:text-[#98FF37] focus-visible:text-[#98FF37] active:text-[#86E031];
+	}
 
-  .link-white {
-    @apply transition-opacity text-white hover:opacity-60 focus-visible:opacity-60 active:opacity-40
-  }
+	.link-white {
+		@apply text-white transition-opacity hover:opacity-60 focus-visible:opacity-60 active:opacity-40;
+	}
 }
 
-
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+	.text-balance {
+		text-wrap: balance;
+	}
 }

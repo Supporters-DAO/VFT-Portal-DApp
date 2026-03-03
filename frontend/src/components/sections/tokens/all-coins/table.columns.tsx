@@ -20,7 +20,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<>
 				<Image
-					src={info?.row?.original?.image}
+					src={info?.row?.original?.image || '/images/no-token.png'}
 					key={info?.row?.original?.id}
 					alt={''}
 					width={60}

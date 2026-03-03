@@ -93,7 +93,7 @@ export function Token({ token: { id, ...token } }: Props) {
 			<div className="grid h-[250px] grid-cols-4 grid-rows-1 gap-10 max-sm:h-auto max-sm:grid-cols-none">
 				<div className="">
 					<Image
-						src={token.image}
+						src={token.image || '/images/no-token.png'}
 						alt={`Logo ${token.name}`}
 						width={160}
 						height={160}
