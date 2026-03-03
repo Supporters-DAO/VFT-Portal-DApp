@@ -1,34 +1,39 @@
-import { GearApi, decodeAddress } from '@gear-js/api'
-import { TypeRegistry } from '@polkadot/types'
+/* eslint-disable */
+
 import {
+	CodeId,
+	ActorId,
 	TransactionBuilder,
+	QueryBuilder,
 	getServiceNamePrefix,
 	getFnNamePrefix,
 	ZERO_ADDRESS,
 } from 'sails-js'
+import { GearApi, BaseGearProgram, HexString } from '@gear-js/api'
+import { TypeRegistry } from '@polkadot/types'
 
 export interface InitConfigFactory {
-	meme_code_id: `0x${string}` | Uint8Array
-	factory_admin_account: Array<`0x${string}` | Uint8Array>
-	gas_for_program: number | string
+	meme_code_id: CodeId
+	factory_admin_account: Array<ActorId>
+	gas_for_program: number | string | bigint
 }
 
 export type MemeError =
-	| { programInitializationFailedWithContext: string }
-	| { unauthorized: null }
-	| { memeExists: null }
-	| { memeNotFound: null }
-	| { insufficientValue: null }
+	| { ProgramInitializationFailedWithContext: string }
+	| { Unauthorized: null }
+	| { MemeExists: null }
+	| { MemeNotFound: null }
+	| { InsufficientValue: null }
 
 export interface Init {
 	name: string
 	symbol: string
-	decimals: number | string
+	decimals: number
 	description: string
 	external_links: ExternalLinks
-	initial_supply: number | string
-	max_supply: number | string
-	admin_id: `0x${string}` | Uint8Array
+	initial_supply: number | string | bigint
+	max_supply: number | string | bigint
+	admin_id: ActorId
 }
 
 export interface ExternalLinks {
@@ -43,18 +48,19 @@ export interface ExternalLinks {
 export interface MemeRecord {
 	name: string
 	symbol: string
-	decimals: number | string
-	meme_program_id: `0x${string}` | Uint8Array
-	admins: Array<`0x${string}` | Uint8Array>
+	decimals: number
+	meme_program_id: ActorId
+	admins: Array<ActorId>
 }
 
-export class Program {
+export class SailsProgram {
 	public readonly registry: TypeRegistry
 	public readonly memeFactory: MemeFactory
+	private _program?: BaseGearProgram
 
 	constructor(
 		public api: GearApi,
-		public programId?: `0x${string}`
+		programId?: `0x${string}`
 	) {
 		const types: Record<string, any> = {
 			InitConfigFactory: {
@@ -101,25 +107,36 @@ export class Program {
 		this.registry = new TypeRegistry()
 		this.registry.setKnownTypes({ types })
 		this.registry.register(types)
+		if (programId) {
+			this._program = new BaseGearProgram(programId, api)
+		}
 
 		this.memeFactory = new MemeFactory(this)
 	}
 
+	public get programId(): `0x${string}` {
+		if (!this._program) throw new Error(`Program ID is not set`)
+		return this._program.id
+	}
+
 	newCtorFromCode(
-		code: Uint8Array | Buffer,
+		code: Uint8Array | HexString,
 		config: InitConfigFactory
 	): TransactionBuilder<null> {
 		const builder = new TransactionBuilder<null>(
 			this.api,
 			this.registry,
 			'upload_program',
-			['New', config],
-			'(String, InitConfigFactory)',
+			null,
+			'New',
+			config,
+			'InitConfigFactory',
 			'String',
-			code
+			code,
+			async (programId) => {
+				this._program = await BaseGearProgram.new(programId, this.api)
+			}
 		)
-
-		this.programId = builder.programId
 		return builder
 	}
 
@@ -128,30 +145,35 @@ export class Program {
 			this.api,
 			this.registry,
 			'create_program',
-			['New', config],
-			'(String, InitConfigFactory)',
+			null,
+			'New',
+			config,
+			'InitConfigFactory',
 			'String',
-			codeId
+			codeId,
+			async (programId) => {
+				this._program = await BaseGearProgram.new(programId, this.api)
+			}
 		)
-
-		this.programId = builder.programId
 		return builder
 	}
 }
 
 export class MemeFactory {
-	constructor(private _program: Program) {}
+	constructor(private _program: SailsProgram) {}
 
 	public addAdminToFactory(
-		admin_actor_id: `0x${string}` | Uint8Array
+		admin_actor_id: ActorId
 	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['MemeFactory', 'AddAdminToFactory', admin_actor_id],
-			'(String, String, [u8;32])',
+			'MemeFactory',
+			'AddAdminToFactory',
+			admin_actor_id,
+			'[u8;32]',
 			'Result<Null, MemeError>',
 			this._program.programId
 		)
@@ -165,218 +187,154 @@ export class MemeFactory {
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['MemeFactory', 'CreateFungibleProgram', init],
-			'(String, String, Init)',
+			'MemeFactory',
+			'CreateFungibleProgram',
+			init,
+			'Init',
 			'Result<Null, MemeError>',
 			this._program.programId
 		)
 	}
 
 	public removeMeme(
-		meme_id: number | string
+		meme_id: number | string | bigint
 	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['MemeFactory', 'RemoveMeme', meme_id],
-			'(String, String, u64)',
+			'MemeFactory',
+			'RemoveMeme',
+			meme_id,
+			'u64',
 			'Result<Null, MemeError>',
 			this._program.programId
 		)
 	}
 
 	public updateCodeId(
-		new_code_id: `0x${string}` | Uint8Array
+		new_code_id: CodeId
 	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['MemeFactory', 'UpdateCodeId', new_code_id],
-			'(String, String, [u8;32])',
+			'MemeFactory',
+			'UpdateCodeId',
+			new_code_id,
+			'[u8;32]',
 			'Result<Null, MemeError>',
 			this._program.programId
 		)
 	}
 
 	public updateGasForProgram(
-		new_gas_amount: number | string
+		new_gas_amount: number | string | bigint
 	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['MemeFactory', 'UpdateGasForProgram', new_gas_amount],
-			'(String, String, u64)',
+			'MemeFactory',
+			'UpdateGasForProgram',
+			new_gas_amount,
+			'u64',
 			'Result<Null, MemeError>',
 			this._program.programId
 		)
 	}
 
-	public async admins(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<Array<`0x${string}` | Uint8Array>> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, Admins]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<[u8;32]>)',
-			reply.payload
+	public admins(): QueryBuilder<Array<ActorId>> {
+		return new QueryBuilder<Array<ActorId>>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'Admins',
+			null,
+			null,
+			'Vec<[u8;32]>'
 		)
-		return result[2].toJSON() as unknown as Array<`0x${string}` | Uint8Array>
 	}
 
-	public async gasForProgram(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, GasForProgram]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, u64)',
-			reply.payload
+	public gasForProgram(): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'GasForProgram',
+			null,
+			null,
+			'u64'
 		)
-		return result[2].toBigInt() as unknown as number | string
 	}
 
-	public async idToAddress(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<Array<[number | string, `0x${string}` | Uint8Array]>> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, IdToAddress]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<(u64, [u8;32])>)',
-			reply.payload
-		)
-		return result[2].toJSON() as unknown as Array<
-			[number | string, `0x${string}` | Uint8Array]
-		>
-	}
-
-	public async memNumber(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, MemNumber]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, u64)',
-			reply.payload
-		)
-		return result[2].toBigInt() as unknown as number | string
-	}
-
-	public async memeCodeId(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<`0x${string}` | Uint8Array> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, MemeCodeId]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, [u8;32])',
-			reply.payload
-		)
-		return result[2].toJSON() as unknown as `0x${string}` | Uint8Array
-	}
-
-	public async memeCoins(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<
-		Array<[`0x${string}` | Uint8Array, Array<[number | string, MemeRecord]>]>
+	public idToAddress(): QueryBuilder<
+		Array<[number | string | bigint, ActorId]>
 	> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[MemeFactory, MemeCoins]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<([u8;32], Vec<(u64, MemeRecord)>)>)',
-			reply.payload
+		return new QueryBuilder<Array<[number | string | bigint, ActorId]>>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'IdToAddress',
+			null,
+			null,
+			'Vec<(u64, [u8;32])>'
 		)
-		return result[2].toJSON() as unknown as Array<
-			[`0x${string}` | Uint8Array, Array<[number | string, MemeRecord]>]
-		>
+	}
+
+	public memNumber(): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'MemNumber',
+			null,
+			null,
+			'u64'
+		)
+	}
+
+	public memeCodeId(): QueryBuilder<CodeId> {
+		return new QueryBuilder<CodeId>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'MemeCodeId',
+			null,
+			null,
+			'[u8;32]'
+		)
+	}
+
+	public memeCoins(): QueryBuilder<
+		Array<[ActorId, Array<[number | string | bigint, MemeRecord]>]>
+	> {
+		return new QueryBuilder<
+			Array<[ActorId, Array<[number | string | bigint, MemeRecord]>]>
+		>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'MemeFactory',
+			'MemeCoins',
+			null,
+			null,
+			'Vec<([u8;32], Vec<(u64, MemeRecord)>)>'
+		)
 	}
 
 	public subscribeToMemeCreatedEvent(
 		callback: (data: {
-			meme_id: number | string
-			meme_address: `0x${string}` | Uint8Array
+			meme_id: number | string | bigint
+			meme_address: ActorId
 			init: Init
 		}) => void | Promise<void>
 	): Promise<() => void> {
@@ -396,15 +354,14 @@ export class MemeFactory {
 					getFnNamePrefix(payload) === 'MemeCreated'
 				) {
 					callback(
-						// @ts-ignore
 						this._program.registry
 							.createType(
 								'(String, String, {"meme_id":"u64","meme_address":"[u8;32]","init":"Init"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							meme_id: number | string
-							meme_address: `0x${string}` | Uint8Array
+							.toJSON() as unknown as {
+							meme_id: number | string | bigint
+							meme_address: ActorId
 							init: Init
 						}
 					)
@@ -415,8 +372,8 @@ export class MemeFactory {
 
 	public subscribeToMemeRemovedEvent(
 		callback: (data: {
-			removed_by: `0x${string}` | Uint8Array
-			meme_id: number | string
+			removed_by: ActorId
+			meme_id: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -440,9 +397,9 @@ export class MemeFactory {
 								'(String, String, {"removed_by":"[u8;32]","meme_id":"u64"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							removed_by: `0x${string}` | Uint8Array
-							meme_id: number | string
+							.toJSON() as unknown as {
+							removed_by: ActorId
+							meme_id: number | string | bigint
 						}
 					)
 				}
@@ -452,8 +409,8 @@ export class MemeFactory {
 
 	public subscribeToGasUpdatedSuccessfullyEvent(
 		callback: (data: {
-			updated_by: `0x${string}` | Uint8Array
-			new_gas_amount: number | string
+			updated_by: ActorId
+			new_gas_amount: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -477,9 +434,9 @@ export class MemeFactory {
 								'(String, String, {"updated_by":"[u8;32]","new_gas_amount":"u64"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							updated_by: `0x${string}` | Uint8Array
-							new_gas_amount: number | string
+							.toJSON() as unknown as {
+							updated_by: ActorId
+							new_gas_amount: number | string | bigint
 						}
 					)
 				}
@@ -489,8 +446,8 @@ export class MemeFactory {
 
 	public subscribeToCodeIdUpdatedSuccessfullyEvent(
 		callback: (data: {
-			updated_by: `0x${string}` | Uint8Array
-			new_code_id: `0x${string}` | Uint8Array
+			updated_by: ActorId
+			new_code_id: CodeId
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -514,9 +471,9 @@ export class MemeFactory {
 								'(String, String, {"updated_by":"[u8;32]","new_code_id":"[u8;32]"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							updated_by: `0x${string}` | Uint8Array
-							new_code_id: `0x${string}` | Uint8Array
+							.toJSON() as unknown as {
+							updated_by: ActorId
+							new_code_id: CodeId
 						}
 					)
 				}
@@ -526,8 +483,8 @@ export class MemeFactory {
 
 	public subscribeToAdminAddedEvent(
 		callback: (data: {
-			updated_by: `0x${string}` | Uint8Array
-			admin_actor_id: `0x${string}` | Uint8Array
+			updated_by: ActorId
+			admin_actor_id: ActorId
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -551,9 +508,9 @@ export class MemeFactory {
 								'(String, String, {"updated_by":"[u8;32]","admin_actor_id":"[u8;32]"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							updated_by: `0x${string}` | Uint8Array
-							admin_actor_id: `0x${string}` | Uint8Array
+							.toJSON() as unknown as {
+							updated_by: ActorId
+							admin_actor_id: ActorId
 						}
 					)
 				}

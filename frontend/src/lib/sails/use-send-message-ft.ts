@@ -5,7 +5,7 @@ import {
 	useApi,
 } from '@gear-js/react-hooks'
 import { useCallback } from 'react'
-import { Program } from './meme-ft'
+import { SailsProgram } from './meme-ft'
 import { TransactionBuilder } from 'sails-js'
 import { useAuth } from '../hooks/use-auth'
 
@@ -85,7 +85,7 @@ export const useMessages = () => {
 			if (!account) throw new Error('Account is not found')
 			if (!api) throw new Error('Api is not ready')
 
-			const program = new Program(api, programId)
+			const program = new SailsProgram(api, programId)
 
 			const executeMessage = async (
 				transactionBuilder: TransactionBuilder<boolean>
@@ -133,6 +133,7 @@ export const useMessages = () => {
 					throw new Error(`Unsupported message type: ${messageType}`)
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[api, isApiReady, account]
 	)
 

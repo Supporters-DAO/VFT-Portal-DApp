@@ -6,7 +6,7 @@ import {
 } from '@gear-js/react-hooks'
 import { CONTRACT_ADDRESS } from '../consts'
 import { useCallback } from 'react'
-import { Program, Init, MemeError } from './meme-factory'
+import { SailsProgram, Init, MemeError } from './meme-factory'
 import { TransactionBuilder } from 'sails-js'
 import { useAuth } from '../hooks/use-auth'
 
@@ -31,15 +31,15 @@ const executeTransaction = async (
 		const result = await response()
 
 		if ('err' in result) {
-			if ('programInitializationFailedWithContext' in result.err) {
-				alert.error(result.err.programInitializationFailedWithContext)
-			} else if ('unauthorized' in result.err) {
+			if ('ProgramInitializationFailedWithContext' in result.err) {
+				alert.error(result.err.ProgramInitializationFailedWithContext)
+			} else if ('Unauthorized' in result.err) {
 				alert.error('Unauthorized error occurred')
-			} else if ('memeExists' in result.err) {
+			} else if ('MemeExists' in result.err) {
 				alert.error('Meme already exists')
-			} else if ('memeNotFound' in result.err) {
+			} else if ('MemeNotFound' in result.err) {
 				alert.error('Meme not found')
-			} else if ('insufficientValue' in result.err) {
+			} else if ('InsufficientValue' in result.err) {
 				alert.error('Insufficient user balance.')
 			} else {
 				alert.error('Unknown error occurred')
@@ -71,7 +71,7 @@ export const useMessages = () => {
 
 			const programId = CONTRACT_ADDRESS.ADDRESS
 
-			const program = new Program(api, programId)
+			const program = new SailsProgram(api, programId)
 
 			const executeMessage = async (
 				transactionBuilder: TransactionBuilder<
@@ -95,6 +95,7 @@ export const useMessages = () => {
 					throw new Error(`Unsupported message type: ${messageType}`)
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[api, isApiReady, account]
 	)
 

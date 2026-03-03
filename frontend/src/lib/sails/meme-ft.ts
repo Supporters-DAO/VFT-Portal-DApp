@@ -1,21 +1,25 @@
-import { GearApi, decodeAddress } from '@gear-js/api'
-import { TypeRegistry } from '@polkadot/types'
+/* eslint-disable */
+
 import {
+	ActorId,
 	TransactionBuilder,
+	QueryBuilder,
 	getServiceNamePrefix,
 	getFnNamePrefix,
 	ZERO_ADDRESS,
 } from 'sails-js'
+import { GearApi, BaseGearProgram, HexString } from '@gear-js/api'
+import { TypeRegistry } from '@polkadot/types'
 
 export interface Init {
 	name: string
 	symbol: string
-	decimals: number | string
+	decimals: number
 	description: string
 	external_links: ExternalLinks
-	initial_supply: number | string
-	max_supply: number | string
-	admin_id: `0x${string}` | Uint8Array
+	initial_supply: number | string | bigint
+	max_supply: number | string | bigint
+	admin_id: ActorId
 }
 
 export interface ExternalLinks {
@@ -27,13 +31,14 @@ export interface ExternalLinks {
 	tokenomics: string | null
 }
 
-export class Program {
+export class SailsProgram {
 	public readonly registry: TypeRegistry
 	public readonly vft: Vft
+	private _program?: BaseGearProgram
 
 	constructor(
 		public api: GearApi,
-		public programId?: `0x${string}`
+		programId?: `0x${string}`
 	) {
 		const types: Record<string, any> = {
 			Init: {
@@ -59,25 +64,36 @@ export class Program {
 		this.registry = new TypeRegistry()
 		this.registry.setKnownTypes({ types })
 		this.registry.register(types)
+		if (programId) {
+			this._program = new BaseGearProgram(programId, api)
+		}
 
 		this.vft = new Vft(this)
 	}
 
+	public get programId(): `0x${string}` {
+		if (!this._program) throw new Error(`Program ID is not set`)
+		return this._program.id
+	}
+
 	newCtorFromCode(
-		code: Uint8Array | Buffer,
+		code: Uint8Array | HexString,
 		init: Init
 	): TransactionBuilder<null> {
 		const builder = new TransactionBuilder<null>(
 			this.api,
 			this.registry,
 			'upload_program',
-			['New', init],
-			'(String, Init)',
+			null,
+			'New',
+			init,
+			'Init',
 			'String',
-			code
+			code,
+			async (programId) => {
+				this._program = await BaseGearProgram.new(programId, this.api)
+			}
 		)
-
-		this.programId = builder.programId
 		return builder
 	}
 
@@ -86,31 +102,36 @@ export class Program {
 			this.api,
 			this.registry,
 			'create_program',
-			['New', init],
-			'(String, Init)',
+			null,
+			'New',
+			init,
+			'Init',
 			'String',
-			codeId
+			codeId,
+			async (programId) => {
+				this._program = await BaseGearProgram.new(programId, this.api)
+			}
 		)
-
-		this.programId = builder.programId
 		return builder
 	}
 }
 
 export class Vft {
-	constructor(private _program: Program) {}
+	constructor(private _program: SailsProgram) {}
 
 	public burn(
-		from: `0x${string}` | Uint8Array,
-		value: number | string
+		$from: ActorId,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'Burn', from, value],
-			'(String, String, [u8;32], U256)',
+			'Vft',
+			'Burn',
+			[$from, value],
+			'([u8;32], U256)',
 			'bool',
 			this._program.programId
 		)
@@ -122,8 +143,10 @@ export class Vft {
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'ChangeDescription', new_description],
-			'(String, String, String)',
+			'Vft',
+			'ChangeDescription',
+			new_description,
+			'String',
 			'Null',
 			this._program.programId
 		)
@@ -137,8 +160,10 @@ export class Vft {
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'ChangeExternalLinks', new_external_links],
-			'(String, String, ExternalLinks)',
+			'Vft',
+			'ChangeExternalLinks',
+			new_external_links,
+			'ExternalLinks',
 			'Null',
 			this._program.programId
 		)
@@ -150,509 +175,371 @@ export class Vft {
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'ChangeImageLink', new_image_link],
-			'(String, String, String)',
+			'Vft',
+			'ChangeImageLink',
+			new_image_link,
+			'String',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public grantAdminRole(
-		to: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public grantAdminRole(to: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'GrantAdminRole', to],
-			'(String, String, [u8;32])',
+			'Vft',
+			'GrantAdminRole',
+			to,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public grantBurnerRole(
-		to: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public grantBurnerRole(to: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'GrantBurnerRole', to],
-			'(String, String, [u8;32])',
+			'Vft',
+			'GrantBurnerRole',
+			to,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public grantMinterRole(
-		to: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public grantMinterRole(to: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'GrantMinterRole', to],
-			'(String, String, [u8;32])',
+			'Vft',
+			'GrantMinterRole',
+			to,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public kill(inheritor: `0x${string}` | Uint8Array): TransactionBuilder<null> {
+	public kill(inheritor: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'Kill', inheritor],
-			'(String, String, [u8;32])',
+			'Vft',
+			'Kill',
+			inheritor,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
 	public mint(
-		to: `0x${string}` | Uint8Array,
-		value: number | string
+		to: ActorId,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'Mint', to, value],
-			'(String, String, [u8;32], U256)',
+			'Vft',
+			'Mint',
+			[to, value],
+			'([u8;32], U256)',
 			'bool',
 			this._program.programId
 		)
 	}
 
-	public revokeAdminRole(
-		from: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public revokeAdminRole($from: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'RevokeAdminRole', from],
-			'(String, String, [u8;32])',
+			'Vft',
+			'RevokeAdminRole',
+			$from,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public revokeBurnerRole(
-		from: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public revokeBurnerRole($from: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'RevokeBurnerRole', from],
-			'(String, String, [u8;32])',
+			'Vft',
+			'RevokeBurnerRole',
+			$from,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
-	public revokeMinterRole(
-		from: `0x${string}` | Uint8Array
-	): TransactionBuilder<null> {
+	public revokeMinterRole($from: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'RevokeMinterRole', from],
-			'(String, String, [u8;32])',
+			'Vft',
+			'RevokeMinterRole',
+			$from,
+			'[u8;32]',
 			'Null',
 			this._program.programId
 		)
 	}
 
 	public transferToUsers(
-		to: Array<`0x${string}` | Uint8Array>,
-		value: number | string
+		to: Array<ActorId>,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'TransferToUsers', to, value],
-			'(String, String, Vec<[u8;32]>, U256)',
+			'Vft',
+			'TransferToUsers',
+			[to, value],
+			'(Vec<[u8;32]>, U256)',
 			'bool',
 			this._program.programId
 		)
 	}
 
 	public approve(
-		spender: `0x${string}` | Uint8Array,
-		value: number | string
+		spender: ActorId,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'Approve', spender, value],
-			'(String, String, [u8;32], U256)',
+			'Vft',
+			'Approve',
+			[spender, value],
+			'([u8;32], U256)',
 			'bool',
 			this._program.programId
 		)
 	}
 
 	public transfer(
-		to: `0x${string}` | Uint8Array,
-		value: number | string
+		to: ActorId,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'Transfer', to, value],
-			'(String, String, [u8;32], U256)',
+			'Vft',
+			'Transfer',
+			[to, value],
+			'([u8;32], U256)',
 			'bool',
 			this._program.programId
 		)
 	}
 
 	public transferFrom(
-		from: `0x${string}` | Uint8Array,
-		to: `0x${string}` | Uint8Array,
-		value: number | string
+		$from: ActorId,
+		to: ActorId,
+		value: number | string | bigint
 	): TransactionBuilder<boolean> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
 		return new TransactionBuilder<boolean>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
-			['Vft', 'TransferFrom', from, to, value],
-			'(String, String, [u8;32], [u8;32], U256)',
+			'Vft',
+			'TransferFrom',
+			[$from, to, value],
+			'([u8;32], [u8;32], U256)',
 			'bool',
 			this._program.programId
 		)
 	}
 
-	public async admins(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<Array<`0x${string}` | Uint8Array>> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Admins]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<[u8;32]>)',
-			reply.payload
+	public admins(): QueryBuilder<Array<ActorId>> {
+		return new QueryBuilder<Array<ActorId>>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Admins',
+			null,
+			null,
+			'Vec<[u8;32]>'
 		)
-		return result[2].toJSON() as unknown as Array<`0x${string}` | Uint8Array>
 	}
 
-	public async burners(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<Array<`0x${string}` | Uint8Array>> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Burners]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<[u8;32]>)',
-			reply.payload
+	public burners(): QueryBuilder<Array<ActorId>> {
+		return new QueryBuilder<Array<ActorId>>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Burners',
+			null,
+			null,
+			'Vec<[u8;32]>'
 		)
-		return result[2].toJSON() as unknown as Array<`0x${string}` | Uint8Array>
 	}
 
-	public async description(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Description]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, String)',
-			reply.payload
+	public description(): QueryBuilder<string> {
+		return new QueryBuilder<string>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Description',
+			null,
+			null,
+			'String'
 		)
-		return result[2].toString() as unknown as string
 	}
 
-	public async externalLinks(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<ExternalLinks> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, ExternalLinks]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, ExternalLinks)',
-			reply.payload
+	public externalLinks(): QueryBuilder<ExternalLinks> {
+		return new QueryBuilder<ExternalLinks>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'ExternalLinks',
+			null,
+			null,
+			'ExternalLinks'
 		)
-		return result[2].toJSON() as unknown as ExternalLinks
 	}
 
-	public async maxSupply(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, MaxSupply]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, U256)',
-			reply.payload
+	public maxSupply(): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'MaxSupply',
+			null,
+			null,
+			'U256'
 		)
-		return result[2].toBigInt() as unknown as number | string
 	}
 
-	public async minters(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<Array<`0x${string}` | Uint8Array>> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Minters]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, Vec<[u8;32]>)',
-			reply.payload
+	public minters(): QueryBuilder<Array<ActorId>> {
+		return new QueryBuilder<Array<ActorId>>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Minters',
+			null,
+			null,
+			'Vec<[u8;32]>'
 		)
-		return result[2].toJSON() as unknown as Array<`0x${string}` | Uint8Array>
 	}
 
-	public async allowance(
-		owner: `0x${string}` | Uint8Array,
-		spender: `0x${string}` | Uint8Array,
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String, [u8;32], [u8;32])', [
-				'Vft',
-				'Allowance',
-				owner,
-				spender,
-			])
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, U256)',
-			reply.payload
+	public allowance(owner: ActorId, spender: ActorId): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Allowance',
+			[owner, spender],
+			'([u8;32], [u8;32])',
+			'U256'
 		)
-		return result[2].toBigInt() as unknown as number | string
 	}
 
-	public async balanceOf(
-		account: `0x${string}` | Uint8Array,
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String, [u8;32])', ['Vft', 'BalanceOf', account])
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, U256)',
-			reply.payload
+	public balanceOf(account: ActorId): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'BalanceOf',
+			account,
+			'[u8;32]',
+			'U256'
 		)
-		return result[2].toBigInt() as unknown as number | string
 	}
 
-	public async decimals(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Decimals]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, u8)',
-			reply.payload
+	public decimals(): QueryBuilder<number> {
+		return new QueryBuilder<number>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Decimals',
+			null,
+			null,
+			'u8'
 		)
-		return result[2].toNumber() as unknown as number | string
 	}
 
-	public async name(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Name]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, String)',
-			reply.payload
+	public name(): QueryBuilder<string> {
+		return new QueryBuilder<string>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Name',
+			null,
+			null,
+			'String'
 		)
-		return result[2].toString() as unknown as string
 	}
 
-	public async symbol(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, Symbol]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, String)',
-			reply.payload
+	public symbol(): QueryBuilder<string> {
+		return new QueryBuilder<string>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'Symbol',
+			null,
+			null,
+			'String'
 		)
-		return result[2].toString() as unknown as string
 	}
 
-	public async totalSupply(
-		originAddress: string,
-		value?: number | string | bigint,
-		atBlock?: `0x${string}`
-	): Promise<number | string> {
-		const payload = this._program.registry
-			.createType('(String, String)', '[Vft, TotalSupply]')
-			.toHex()
-		const reply = await this._program.api.message.calculateReply({
-			// @ts-ignore
-			destination: this._program.programId,
-			origin: decodeAddress(originAddress),
-			payload,
-			value: value || 0,
-			gasLimit: this._program.api.blockGasLimit.toBigInt(),
-			// @ts-ignore
-			at: atBlock || null,
-		})
-		const result = this._program.registry.createType(
-			'(String, String, U256)',
-			reply.payload
+	public totalSupply(): QueryBuilder<bigint> {
+		return new QueryBuilder<bigint>(
+			this._program.api,
+			this._program.registry,
+			this._program.programId,
+			'Vft',
+			'TotalSupply',
+			null,
+			null,
+			'U256'
 		)
-		return result[2].toBigInt() as unknown as number | string
 	}
 
 	public subscribeToMintedEvent(
 		callback: (data: {
-			to: `0x${string}` | Uint8Array
-			value: number | string
+			to: ActorId
+			value: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -676,9 +563,9 @@ export class Vft {
 								'(String, String, {"to":"[u8;32]","value":"U256"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							to: `0x${string}` | Uint8Array
-							value: number | string
+							.toJSON() as unknown as {
+							to: ActorId
+							value: number | string | bigint
 						}
 					)
 				}
@@ -688,8 +575,8 @@ export class Vft {
 
 	public subscribeToBurnedEvent(
 		callback: (data: {
-			from: `0x${string}` | Uint8Array
-			value: number | string
+			from: ActorId
+			value: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -713,9 +600,9 @@ export class Vft {
 								'(String, String, {"from":"[u8;32]","value":"U256"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							from: `0x${string}` | Uint8Array
-							value: number | string
+							.toJSON() as unknown as {
+							from: ActorId
+							value: number | string | bigint
 						}
 					)
 				}
@@ -724,9 +611,7 @@ export class Vft {
 	}
 
 	public subscribeToKilledEvent(
-		callback: (data: {
-			inheritor: `0x${string}` | Uint8Array
-		}) => void | Promise<void>
+		callback: (data: { inheritor: ActorId }) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
 			'UserMessageSent',
@@ -749,7 +634,7 @@ export class Vft {
 								'(String, String, {"inheritor":"[u8;32]"})',
 								message.payload
 							)[2]
-							.toJSON() as { inheritor: `0x${string}` | Uint8Array }
+							.toJSON() as unknown as { inheritor: ActorId }
 					)
 				}
 			}
@@ -758,9 +643,9 @@ export class Vft {
 
 	public subscribeToTransferredToUsersEvent(
 		callback: (data: {
-			from: `0x${string}` | Uint8Array
-			to: Array<`0x${string}` | Uint8Array>
-			value: number | string
+			from: ActorId
+			to: Array<ActorId>
+			value: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -784,10 +669,10 @@ export class Vft {
 								'(String, String, {"from":"[u8;32]","to":"Vec<[u8;32]>","value":"U256"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							from: `0x${string}` | Uint8Array
-							to: Array<`0x${string}` | Uint8Array>
-							value: number | string
+							.toJSON() as unknown as {
+							from: ActorId
+							to: Array<ActorId>
+							value: number | string | bigint
 						}
 					)
 				}
@@ -819,7 +704,7 @@ export class Vft {
 								'(String, String, {"new_description":"String"})',
 								message.payload
 							)[2]
-							.toJSON() as { new_description: string }
+							.toJSON() as unknown as { new_description: string }
 					)
 				}
 			}
@@ -850,7 +735,7 @@ export class Vft {
 								'(String, String, {"new_image_link":"String"})',
 								message.payload
 							)[2]
-							.toJSON() as { new_image_link: string }
+							.toJSON() as unknown as { new_image_link: string }
 					)
 				}
 			}
@@ -878,13 +763,12 @@ export class Vft {
 					getFnNamePrefix(payload) === 'ExternalLinksChanged'
 				) {
 					callback(
-						// @ts-ignore
 						this._program.registry
 							.createType(
 								'(String, String, {"new_external_links":"ExternalLinks"})',
 								message.payload
 							)[2]
-							.toJSON() as { new_external_links: ExternalLinks }
+							.toJSON() as unknown as { new_external_links: ExternalLinks }
 					)
 				}
 			}
@@ -893,9 +777,9 @@ export class Vft {
 
 	public subscribeToApprovalEvent(
 		callback: (data: {
-			owner: `0x${string}` | Uint8Array
-			spender: `0x${string}` | Uint8Array
-			value: number | string
+			owner: ActorId
+			spender: ActorId
+			value: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -919,10 +803,10 @@ export class Vft {
 								'(String, String, {"owner":"[u8;32]","spender":"[u8;32]","value":"U256"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							owner: `0x${string}` | Uint8Array
-							spender: `0x${string}` | Uint8Array
-							value: number | string
+							.toJSON() as unknown as {
+							owner: ActorId
+							spender: ActorId
+							value: number | string | bigint
 						}
 					)
 				}
@@ -932,9 +816,9 @@ export class Vft {
 
 	public subscribeToTransferEvent(
 		callback: (data: {
-			from: `0x${string}` | Uint8Array
-			to: `0x${string}` | Uint8Array
-			value: number | string
+			from: ActorId
+			to: ActorId
+			value: number | string | bigint
 		}) => void | Promise<void>
 	): Promise<() => void> {
 		return this._program.api.gearEvents.subscribeToGearEvent(
@@ -958,10 +842,10 @@ export class Vft {
 								'(String, String, {"from":"[u8;32]","to":"[u8;32]","value":"U256"})',
 								message.payload
 							)[2]
-							.toJSON() as {
-							from: `0x${string}` | Uint8Array
-							to: `0x${string}` | Uint8Array
-							value: number | string
+							.toJSON() as unknown as {
+							from: ActorId
+							to: ActorId
+							value: number | string | bigint
 						}
 					)
 				}
