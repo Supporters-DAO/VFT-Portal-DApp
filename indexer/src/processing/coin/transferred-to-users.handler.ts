@@ -1,5 +1,5 @@
 import { EntitiesService } from "../entities.service";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { ICoinEventHandler } from "./coin.handler";
 import { EventInfo } from "../event-info.type";
 import { Coin, Transfer } from "../../model";
@@ -32,7 +32,7 @@ export class TransferredToUsersHandler implements ICoinEventHandler {
       await storage.setAccountBalance(toBalance);
       storage.addTransfer(
         new Transfer({
-          id: uuidv4(),
+          id: randomUUID(),
           coin: coin,
           from,
           to: address,
