@@ -81,7 +81,7 @@ export function compactFormatNumber(
 
 export const getGatewayUrl = (ipfsUrl: string) => {
 	const ipfsHash = ipfsUrl.split('ipfs://')[1]
-	return `${ADDRESS.IPFS_GETAWAY}${ipfsHash}`
+	return `${ADDRESS.IPFS_GETAWAY}/${ipfsHash}`
 }
 
 export const uploadToIpfs = async (files: File[]) => {

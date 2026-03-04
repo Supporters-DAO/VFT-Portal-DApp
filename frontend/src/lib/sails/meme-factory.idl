@@ -2,14 +2,7 @@ type InitConfigFactory = struct {
   meme_code_id: code_id,
   factory_admin_account: vec actor_id,
   gas_for_program: u64,
-};
-
-type MemeError = enum {
-  ProgramInitializationFailedWithContext: str,
-  Unauthorized,
-  MemeExists,
-  MemeNotFound,
-  InsufficientValue,
+  gas_for_reply_deposit: u64,
 };
 
 type Init = struct {
@@ -45,11 +38,12 @@ constructor {
 };
 
 service MemeFactory {
-  AddAdminToFactory : (admin_actor_id: actor_id) -> result (null, MemeError);
-  CreateFungibleProgram : (init: Init) -> result (null, MemeError);
-  RemoveMeme : (meme_id: u64) -> result (null, MemeError);
-  UpdateCodeId : (new_code_id: code_id) -> result (null, MemeError);
-  UpdateGasForProgram : (new_gas_amount: u64) -> result (null, MemeError);
+  AddAdminToFactory : (admin_actor_id: actor_id) -> null;
+  CreateFungibleProgram : (init: Init) -> actor_id;
+  RemoveMeme : (meme_id: u64) -> null;
+  UpdateCodeId : (new_code_id: code_id) -> null;
+  UpdateGasForProgram : (new_gas_amount: u64) -> null;
+  UpdateGasForReplyDeposit : (new_gas_amount: u64) -> null;
   query Admins : () -> vec actor_id;
   query GasForProgram : () -> u64;
   query IdToAddress : () -> vec struct { u64, actor_id };
@@ -58,11 +52,27 @@ service MemeFactory {
   query MemeCoins : () -> vec struct { actor_id, vec struct { u64, MemeRecord } };
 
   events {
-    MemeCreated: struct { meme_id: u64, meme_address: actor_id, init: Init };
-    MemeRemoved: struct { removed_by: actor_id, meme_id: u64 };
-    GasUpdatedSuccessfully: struct { updated_by: actor_id, new_gas_amount: u64 };
-    CodeIdUpdatedSuccessfully: struct { updated_by: actor_id, new_code_id: code_id };
-    AdminAdded: struct { updated_by: actor_id, admin_actor_id: actor_id };
+    MemeCreated: struct {
+      meme_id: u64,
+      meme_address: actor_id,
+      init: Init,
+    };
+    MemeRemoved: struct {
+      removed_by: actor_id,
+      meme_id: u64,
+    };
+    GasUpdatedSuccessfully: struct {
+      updated_by: actor_id,
+      new_gas_amount: u64,
+    };
+    CodeIdUpdatedSuccessfully: struct {
+      updated_by: actor_id,
+      new_code_id: code_id,
+    };
+    AdminAdded: struct {
+      updated_by: actor_id,
+      admin_actor_id: actor_id,
+    };
   }
 };
 

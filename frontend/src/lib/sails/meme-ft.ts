@@ -77,7 +77,7 @@ export class SailsProgram {
 	}
 
 	newCtorFromCode(
-		code: Uint8Array | HexString,
+		code: Uint8Array | Buffer | HexString,
 		init: Init
 	): TransactionBuilder<null> {
 		const builder = new TransactionBuilder<null>(

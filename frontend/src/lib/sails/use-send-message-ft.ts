@@ -42,8 +42,7 @@ const executeTransaction = async (
 	alert: AlertContainerFactory
 ) => {
 	transaction.withAccount(account.address, { signer: account.signer })
-
-	await transaction.calculateGas(false, 100)
+	await transaction.calculateGas()
 
 	const { msgId, blockHash, isFinalized } = await transaction.signAndSend()
 

@@ -86,14 +86,14 @@ export const ConfirmCreate = ({ data }: Props) => {
 
 	return (
 		<div className="flex flex-col items-center gap-3 overflow-hidden">
-			<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
+			<h1 className="text-primary text-[28px] max-sm:text-center max-sm:text-[16px]">
 				Create Token
 			</h1>
-			<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px]">
+			<div className="bg-blue-light flex w-[660px] flex-col gap-6 rounded-[40px] p-10 max-sm:w-full max-sm:rounded-[20px]">
 				<div className="mx-auto w-2/5 max-sm:w-[70%]">
 					<ol className="flex w-full items-center">
-						<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-primary after:content-['']">
-							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
+						<li className="after:border-primary flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:content-['']">
+							<span className="bg-primary flex size-10 shrink-0 items-center justify-center rounded-full max-sm:size-7 max-sm:text-[12px]">
 								1
 							</span>
 						</li>
@@ -103,7 +103,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 								isCreated && 'after:border-primary'
 							)}
 						>
-							<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
+							<span className="bg-primary flex size-10 shrink-0 items-center justify-center rounded-full max-sm:size-7 max-sm:text-[12px]">
 								2
 							</span>
 						</li>
@@ -123,7 +123,7 @@ export const ConfirmCreate = ({ data }: Props) => {
 					<>
 						<h3 className="text-center uppercase">Confirm Details</h3>
 						{data && (
-							<div className="flex flex-col gap-5 break-words font-poppins">
+							<div className="font-poppins flex flex-col gap-5 break-words">
 								<div className="flex justify-center">
 									<Image
 										src={URL.createObjectURL(data.image)}
@@ -223,14 +223,14 @@ export const ConfirmCreate = ({ data }: Props) => {
 								Back
 							</button>
 							<button
-								className="mx-auto w-full rounded-lg bg-primary py-3 text-black disabled:bg-[#D0D3D9]"
+								className="bg-primary mx-auto w-full rounded-lg py-3 text-black disabled:bg-[#D0D3D9]"
 								onClick={onCreate}
 								disabled={isPending}
 							>
 								{isPending ? (
 									<span className="mx-auto flex w-1/2 max-sm:w-4/5 max-sm:text-[3vw]">
 										Pending
-										<span className="w-full after:flex after:animate-dots after:content-['']"></span>
+										<span className="after:animate-dots w-full after:flex after:content-['']"></span>
 									</span>
 								) : (
 									'Confirm'

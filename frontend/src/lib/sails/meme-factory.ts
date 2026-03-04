@@ -16,14 +16,8 @@ export interface InitConfigFactory {
 	meme_code_id: CodeId
 	factory_admin_account: Array<ActorId>
 	gas_for_program: number | string | bigint
+	gas_for_reply_deposit: number | string | bigint
 }
-
-export type MemeError =
-	| { ProgramInitializationFailedWithContext: string }
-	| { Unauthorized: null }
-	| { MemeExists: null }
-	| { MemeNotFound: null }
-	| { InsufficientValue: null }
 
 export interface Init {
 	name: string
@@ -67,15 +61,7 @@ export class SailsProgram {
 				meme_code_id: '[u8;32]',
 				factory_admin_account: 'Vec<[u8;32]>',
 				gas_for_program: 'u64',
-			},
-			MemeError: {
-				_enum: {
-					ProgramInitializationFailedWithContext: 'String',
-					Unauthorized: 'Null',
-					MemeExists: 'Null',
-					MemeNotFound: 'Null',
-					InsufficientValue: 'Null',
-				},
+				gas_for_reply_deposit: 'u64',
 			},
 			Init: {
 				name: 'String',
@@ -120,7 +106,7 @@ export class SailsProgram {
 	}
 
 	newCtorFromCode(
-		code: Uint8Array | HexString,
+		code: Uint8Array | Buffer | HexString,
 		config: InitConfigFactory
 	): TransactionBuilder<null> {
 		const builder = new TransactionBuilder<null>(
@@ -162,11 +148,9 @@ export class SailsProgram {
 export class MemeFactory {
 	constructor(private _program: SailsProgram) {}
 
-	public addAdminToFactory(
-		admin_actor_id: ActorId
-	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
+	public addAdminToFactory(admin_actor_id: ActorId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
-		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
+		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
@@ -174,16 +158,14 @@ export class MemeFactory {
 			'AddAdminToFactory',
 			admin_actor_id,
 			'[u8;32]',
-			'Result<Null, MemeError>',
+			'Null',
 			this._program.programId
 		)
 	}
 
-	public createFungibleProgram(
-		init: Init
-	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
+	public createFungibleProgram(init: Init): TransactionBuilder<ActorId> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
-		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
+		return new TransactionBuilder<ActorId>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
@@ -191,16 +173,16 @@ export class MemeFactory {
 			'CreateFungibleProgram',
 			init,
 			'Init',
-			'Result<Null, MemeError>',
+			'[u8;32]',
 			this._program.programId
 		)
 	}
 
 	public removeMeme(
 		meme_id: number | string | bigint
-	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
+	): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
-		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
+		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
@@ -208,16 +190,14 @@ export class MemeFactory {
 			'RemoveMeme',
 			meme_id,
 			'u64',
-			'Result<Null, MemeError>',
+			'Null',
 			this._program.programId
 		)
 	}
 
-	public updateCodeId(
-		new_code_id: CodeId
-	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
+	public updateCodeId(new_code_id: CodeId): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
-		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
+		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
@@ -225,16 +205,16 @@ export class MemeFactory {
 			'UpdateCodeId',
 			new_code_id,
 			'[u8;32]',
-			'Result<Null, MemeError>',
+			'Null',
 			this._program.programId
 		)
 	}
 
 	public updateGasForProgram(
 		new_gas_amount: number | string | bigint
-	): TransactionBuilder<{ ok: null } | { err: MemeError }> {
+	): TransactionBuilder<null> {
 		if (!this._program.programId) throw new Error('Program ID is not set')
-		return new TransactionBuilder<{ ok: null } | { err: MemeError }>(
+		return new TransactionBuilder<null>(
 			this._program.api,
 			this._program.registry,
 			'send_message',
@@ -242,7 +222,24 @@ export class MemeFactory {
 			'UpdateGasForProgram',
 			new_gas_amount,
 			'u64',
-			'Result<Null, MemeError>',
+			'Null',
+			this._program.programId
+		)
+	}
+
+	public updateGasForReplyDeposit(
+		new_gas_amount: number | string | bigint
+	): TransactionBuilder<null> {
+		if (!this._program.programId) throw new Error('Program ID is not set')
+		return new TransactionBuilder<null>(
+			this._program.api,
+			this._program.registry,
+			'send_message',
+			'MemeFactory',
+			'UpdateGasForReplyDeposit',
+			new_gas_amount,
+			'u64',
+			'Null',
 			this._program.programId
 		)
 	}
