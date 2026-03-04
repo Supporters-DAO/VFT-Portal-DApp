@@ -1,8 +1,33 @@
-import { Sails, getFnNamePrefix, getServiceNamePrefix } from "sails-js";
+import {
+  Sails,
+  ActorId,
+  getFnNamePrefix,
+  getServiceNamePrefix,
+} from "sails-js";
 import { readFileSync } from "fs";
-import { HexString } from "@gear-js/api";
-import { ActorId, Init } from "../factory-types/lib";
 import { safeUnwrapToBigInt, safeUnwrapToNumber } from "./event.utils";
+import { HexString } from ".";
+import { SailsIdlParser } from "sails-js-parser";
+
+interface ExternalLinks {
+  image: string;
+  website: string | null;
+  telegram: string | null;
+  twitter: string | null;
+  discord: string | null;
+  tokenomics: string | null;
+}
+
+interface Init {
+  name: string;
+  symbol: string;
+  decimals: number | string;
+  description: string;
+  external_links: ExternalLinks;
+  initial_supply: number | string;
+  max_supply: number | string;
+  admin_id: ActorId;
+}
 
 let instance: MemeFactoryEventsParser | undefined;
 
@@ -48,7 +73,9 @@ export class MemeFactoryEventsParser {
 
   async init() {
     const idl = readFileSync("./assets/meme-factory.idl", "utf-8");
-    this.sails = await Sails.new();
+
+    const parser = await SailsIdlParser.new();
+    this.sails = new Sails(parser);
 
     this.sails.parseIdl(idl);
   }

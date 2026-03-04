@@ -1,7 +1,8 @@
 import { safeUnwrapToBigInt } from "./event.utils";
 import { getFnNamePrefix, getServiceNamePrefix, Sails } from "sails-js";
 import { readFileSync } from "fs";
-import { HexString } from "@gear-js/api";
+import { HexString } from ".";
+import { SailsIdlParser } from "sails-js-parser";
 
 let instance: CoinEventsParser | undefined;
 
@@ -71,7 +72,9 @@ export class CoinEventsParser {
 
   async init() {
     const idl = readFileSync("./assets/coin.idl", "utf-8");
-    this.sails = await Sails.new();
+
+    const parser = await SailsIdlParser.new();
+    this.sails = new Sails(parser);
 
     this.sails.parseIdl(idl);
   }

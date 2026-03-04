@@ -80,17 +80,17 @@ export class LocalStorage implements IStorage {
   }
 
   private async loadFactory() {
-    try {
-      this.factory = await this.store.findOne(Factory, { where: {} });
-      if (!this.factory) {
-        this.factory = new Factory({
-          address: config.factoryProgram,
-          meta: factoryMeta,
-          coinMeta: coinMeta,
-        });
-        await this.store.save(this.factory);
-      }
-    } catch (e) {}
+    this.factory = await this.store.findOne(Factory, { where: {} });
+
+    if (!this.factory) {
+      this.factory = new Factory({
+        id: config.factoryProgram,
+        address: config.factoryProgram,
+        meta: factoryMeta,
+        coinMeta: coinMeta,
+      });
+      await this.store.save(this.factory);
+    }
   }
 
   private async loadCoins() {

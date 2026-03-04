@@ -64,7 +64,13 @@
       "cmd": ["squid-graphql-server"]
     },
     "check-updates": {
-      "cmd": ["npx", "--yes", "npm-check-updates", "--filter=/subsquid/", "--upgrade"],
+      "cmd": [
+        "npx",
+        "--yes",
+        "npm-check-updates",
+        "--filter=/subsquid/",
+        "--upgrade"
+      ],
       "hidden": true
     },
     "bump": {

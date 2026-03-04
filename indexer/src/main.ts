@@ -32,7 +32,6 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   const coinParser = await getCoinEventsParser();
   const processing = new EventsProcessing(
     entitiesService,
-    localStorage,
     memeFactoryParser,
     coinParser
   );

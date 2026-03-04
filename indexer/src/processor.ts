@@ -1,4 +1,3 @@
-import { assertNotNull } from "@subsquid/util-internal";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -9,15 +8,15 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { config } from "./config";
-import { hostname } from 'os';
+import { hostname } from "os";
 
 export const processor = new SubstrateBatchProcessor()
   .setRpcEndpoint({
-    url: assertNotNull(process.env.RPC_ENDPOINT),
+    url: config.rpcEndpoint,
     rateLimit: config.rateLimit,
     headers: {
       "User-Agent": hostname(),
-    }
+    },
   })
   .addEvent({
     name: ["Gear.UserMessageSent"],
