@@ -3,6 +3,7 @@ import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
 import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import { getSafeImageSrc } from '@/lib/sanitize'
 import { Sprite } from '@/components/ui/sprite'
 import {
 	DropdownMenu,
@@ -30,12 +31,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<div className="relative flex flex-col items-center justify-center">
 				<Image
-					src={info?.row?.original?.image || '/images/no-token.png'}
+					src={getSafeImageSrc(info?.row?.original?.image)}
 					alt={info?.row?.original?.name}
 					width={60}
 					height={60}
+					unoptimized={true}
 					className="size-15 rounded-full object-cover"
-					// unoptimized={true}
 					onError={(e) => {
 						const target = e.target as HTMLImageElement
 						target.onerror = null // prevents looping

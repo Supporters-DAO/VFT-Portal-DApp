@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { AnimationCoins } from '@/components/common/animation-coins'
+import { getSafeImageSrc } from '@/lib/sanitize'
 
 interface Props {
 	name: string
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export const Created = ({ name, image }: Props) => {
+	const imageSrc = getSafeImageSrc(image)
+
 	return (
 		<>
 			<AnimationCoins />
@@ -21,7 +24,7 @@ export const Created = ({ name, image }: Props) => {
 				<div className="mx-auto flex flex-col items-center justify-center gap-3 rounded-[42px] border-2 border-[#2E3B55] bg-[#172542] p-7 max-sm:p-5">
 					<div className="font-ps2p uppercase text-primary max-sm:text-[10px]">{name}</div>
 					<Image
-						src={image}
+						src={imageSrc}
 						alt={`Logo ${name}`}
 						width={100}
 						height={100}

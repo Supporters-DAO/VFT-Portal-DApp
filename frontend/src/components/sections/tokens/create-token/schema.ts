@@ -9,13 +9,19 @@ const ACCEPTED_IMAGE_TYPES = [
 	'image/gif',
 ]
 
+const optionalHttpsUrl = z
+	.url()
+	.min(1, { message: 'URL must be at least 2 characters long' })
+	.refine((value) => new URL(value).protocol === 'https:', {
+		message: 'URL must start with https://',
+	})
+	.or(z.literal(''))
+	.optional()
+
 export const createTokenSchema = z
 	.object({
 		name: z
-			.string({
-				required_error: 'Required',
-				invalid_type_error: 'Required',
-			})
+			.string()
 			.regex(/^([A-Za-z ]+)$/, { message: 'Only Latin letters are allowed' })
 			.min(2, { message: 'Name must be at least 2 characters' })
 			.max(10, { message: 'Name must be no more than 10 characters' }),
@@ -51,37 +57,11 @@ export const createTokenSchema = z
 			)
 			.transform((value) => value ?? null),
 		external_links: z.object({
-			website: z
-				.string()
-				.min(1, { message: 'Website must be at least 2 characters long' })
-				.url()
-				.includes('https://', { message: 'Invalid URL' })
-				.or(z.literal(''))
-				.optional(),
-			telegram: z
-				.string()
-				.min(1, { message: 'Telegram must be at least 2 characters long' })
-				.url()
-				.or(z.literal(''))
-				.optional(),
-			twitter: z
-				.string()
-				.min(1, { message: 'Twitter must be at least 2 characters long' })
-				.url()
-				.or(z.literal(''))
-				.optional(),
-			discord: z
-				.string()
-				.min(1, { message: 'Discord must be at least 2 characters long' })
-				.url()
-				.or(z.literal(''))
-				.optional(),
-			tokenomics: z
-				.string()
-				.min(1, { message: 'Tokenomics must be at least 2 characters long' })
-				.url()
-				.or(z.literal(''))
-				.optional(),
+			website: optionalHttpsUrl,
+			telegram: optionalHttpsUrl,
+			twitter: optionalHttpsUrl,
+			discord: optionalHttpsUrl,
+			tokenomics: optionalHttpsUrl,
 		}),
 		initial_supply: z.nullable(
 			z

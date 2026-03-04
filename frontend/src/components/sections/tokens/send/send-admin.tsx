@@ -10,7 +10,6 @@ import { isValidHexString, parseUnits } from '@/lib/utils'
 
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/use-auth'
-import action from '@/app/actions'
 import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
@@ -102,8 +101,6 @@ export const SendAdmin = ({ id, tokenBalance, decimals }: Props) => {
 		setIsPending(false)
 		setAddresses([])
 		setInputAmount('')
-		action('token')
-		action('balance')
 		router.push(`/tokens/${id}`)
 	}
 

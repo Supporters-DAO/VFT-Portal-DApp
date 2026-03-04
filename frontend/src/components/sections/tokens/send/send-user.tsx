@@ -6,7 +6,6 @@ import { HexString, decodeAddress } from '@gear-js/api'
 import { Input } from '@/components/ui/input'
 import { isValidHexString, parseUnits } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import action from '@/app/actions'
 import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
@@ -45,8 +44,6 @@ export const SendUser = ({ id, decimals }: Props) => {
 
 		setAddress(undefined)
 		setInputAmount('')
-		action('token')
-		action('balance')
 		router.push(`/tokens/${id}`)
 	}
 

@@ -8,6 +8,12 @@ const withBundleAnalyzer = BundleAnalyzer({
 
 const require = createRequire(import.meta.url)
 
+if (!process.env.NEXT_PUBLIC_IPFS_GETAWAY) {
+	throw new Error('NEXT_PUBLIC_IPFS_GETAWAY must be set')
+}
+
+const gatewayUrl = new URL(process.env.NEXT_PUBLIC_IPFS_GETAWAY)
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
@@ -24,8 +30,10 @@ const nextConfig = {
 	images: {
 		remotePatterns: [
 			{
-				protocol: 'https',
-				hostname: '**',
+				protocol: gatewayUrl.protocol.replace(':', ''),
+				hostname: gatewayUrl.hostname,
+				port: gatewayUrl.port || undefined,
+				pathname: `${gatewayUrl.pathname.replace(/\/$/, '') || ''}/**`,
 			},
 		],
 	},

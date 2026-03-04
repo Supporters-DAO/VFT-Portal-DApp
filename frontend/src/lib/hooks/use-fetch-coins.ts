@@ -23,12 +23,15 @@ export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
 	const [totalCoins, setTotalCoins] = useState(0)
 	const [tokenData, setTokenData] = useState<Token[]>([])
 
-	const whereClause = searchQuery.trim()
-		? `, where: { name_containsInsensitive: "${searchQuery.trim()}" }`
+	const normalizedSearchQuery = searchQuery.trim()
+	const hasSearchQuery = normalizedSearchQuery.length > 0
+	const searchDefinition = hasSearchQuery ? ', $search: String!' : ''
+	const whereClause = hasSearchQuery
+		? ', where: { name_containsInsensitive: $search }'
 		: ''
 
-	const query = `{
-        coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC${whereClause}) {
+	const query = `query FetchCoins($limit: Int!, $offset: Int!${searchDefinition}) {
+        coins(limit: $limit, offset: $offset, orderBy: id_ASC${whereClause}) {
             description
             decimals
             distributed
@@ -46,11 +49,14 @@ export const useFetchCoins = (limit = 20, offset = 0, searchQuery = '') => {
 			totalCount
 		}
     }`
+	const variables = hasSearchQuery
+		? { limit, offset, search: normalizedSearchQuery }
+		: { limit, offset }
 
 	const options = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ query }),
+		body: JSON.stringify({ query, variables }),
 	}
 
 	useEffect(() => {

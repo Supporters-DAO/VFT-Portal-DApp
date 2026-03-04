@@ -6,6 +6,7 @@ import Image from 'next/image'
 
 import { Sprite } from '@/components/ui/sprite'
 import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import { getSafeHttpsUrl, getSafeImageSrc } from '@/lib/sanitize'
 import { useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
 import { HexString } from '@gear-js/api'
@@ -41,7 +42,7 @@ type Props = {
 
 function SocialLink({ platform, href }: { platform: string; href: string }) {
 	return (
-		<Link href={href} target="_blank">
+		<Link href={href} target="_blank" rel="noopener noreferrer">
 			<Sprite name={platform} color="#B4FF69" className="size-[26px]" />
 		</Link>
 	)
@@ -76,6 +77,12 @@ export function Token({ token: { id, ...token } }: Props) {
 
 	const availableMint =
 		BigInt(token.maxSupply) - BigInt(token.circulatingSupply)
+	const websiteHref = getSafeHttpsUrl(token.website)
+	const twitterHref = getSafeHttpsUrl(token.twitter)
+	const discordHref = getSafeHttpsUrl(token.discord)
+	const telegramHref = getSafeHttpsUrl(token.telegram)
+	const tokenomicsHref = getSafeHttpsUrl(token.tokenomics)
+	const imageSrc = getSafeImageSrc(token.image)
 
 	return (
 		<section>
@@ -93,7 +100,7 @@ export function Token({ token: { id, ...token } }: Props) {
 			<div className="grid h-[250px] grid-cols-4 grid-rows-1 gap-10 max-sm:h-auto max-sm:grid-cols-none">
 				<div className="">
 					<Image
-						src={token.image || '/images/no-token.png'}
+						src={imageSrc}
 						alt={`Logo ${token.name}`}
 						width={160}
 						height={160}
@@ -127,8 +134,12 @@ export function Token({ token: { id, ...token } }: Props) {
 							<Sprite name="link" color="#B4FF69" className="size-4" />
 							Share link
 						</button>
-						{token.tokenomics && (
-							<Link href={token.tokenomics} target="_blank">
+						{tokenomicsHref && (
+							<Link
+								href={tokenomicsHref}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<div className="flex items-center gap-2">
 									<Sprite
 										name="tokenomics"
@@ -233,17 +244,17 @@ export function Token({ token: { id, ...token } }: Props) {
 							<p>{token.description}</p>
 						</div>
 						<div className="flex items-center gap-6">
-							{token.website && (
-								<SocialLink platform="web" href={token.website} />
+							{websiteHref && (
+								<SocialLink platform="web" href={websiteHref} />
 							)}
-							{token.twitter && (
-								<SocialLink platform="twitter" href={token.twitter} />
+							{twitterHref && (
+								<SocialLink platform="twitter" href={twitterHref} />
 							)}
-							{token.discord && (
-								<SocialLink platform="discord" href={token.discord} />
+							{discordHref && (
+								<SocialLink platform="discord" href={discordHref} />
 							)}
-							{token.telegram && (
-								<SocialLink platform="telegram" href={token.telegram} />
+							{telegramHref && (
+								<SocialLink platform="telegram" href={telegramHref} />
 							)}
 						</div>
 					</div>

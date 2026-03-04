@@ -9,7 +9,7 @@ type Props = {
 }
 
 export const WithAuthLayout = ({ children }: Props) => {
-	const { walletAccount, isAccountReadyAtom, isAdmin } = useAuth()
+	const { walletAccount, isAccountReadyAtom } = useAuth()
 
 	if (!isAccountReadyAtom) {
 		return null

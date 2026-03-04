@@ -3,6 +3,7 @@ import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
 import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import { getSafeImageSrc } from '@/lib/sanitize'
 import { Sprite } from '@/components/ui/sprite'
 import { Token } from '@/lib/hooks/use-fetch-coins'
 
@@ -20,11 +21,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<>
 				<Image
-					src={info?.row?.original?.image || '/images/no-token.png'}
+					src={getSafeImageSrc(info?.row?.original?.image)}
 					key={info?.row?.original?.id}
 					alt={''}
 					width={60}
 					height={60}
+					unoptimized={true}
 					className="size-15 rounded-full object-cover"
 					onError={(e) => {
 						const target = e.target as HTMLImageElement
