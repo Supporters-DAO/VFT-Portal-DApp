@@ -1,12 +1,12 @@
 export const SOCIALS = {
 	twitter: {
 		icon: 'twitter',
-		url: 'https://x.com/SupportersDAO',
+		url: 'https://x.com/VaraNetwork',
 		title: 'X.com',
 	},
 	github: {
 		icon: 'github',
-		url: 'https://github.com/Supporters-DAO/Memecoin-Portal-DApp',
+		url: 'https://github.com/Supporters-DAO/VFT-Portal-DApp',
 		title: 'Github',
 	},
 	// discord: {
