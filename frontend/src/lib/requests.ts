@@ -4,8 +4,8 @@ import { IGQLRequestWrapper } from '@/lib/types'
 const lastCoinSchema = z.object({
 	id: z.string(),
 	name: z.string(),
-	timestamp: z.string().datetime(),
-	image: z.string().url(),
+	timestamp: z.iso.datetime(),
+	image: z.url(),
 	distributed: z.string(),
 	maxSupply: z.string(),
 	symbol: z.string(),

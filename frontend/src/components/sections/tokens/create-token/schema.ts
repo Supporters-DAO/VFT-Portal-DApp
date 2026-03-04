@@ -9,14 +9,7 @@ const ACCEPTED_IMAGE_TYPES = [
 	'image/gif',
 ]
 
-const optionalHttpsUrl = z
-	.url()
-	.min(1, { message: 'URL must be at least 2 characters long' })
-	.refine((value) => new URL(value).protocol === 'https:', {
-		message: 'URL must start with https://',
-	})
-	.or(z.literal(''))
-	.optional()
+const optionalHttpsUrl = z.url({ protocol: /^https$/ }).or(z.literal(''))
 
 export const createTokenSchema = z
 	.object({
