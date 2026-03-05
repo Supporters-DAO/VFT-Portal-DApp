@@ -36,7 +36,7 @@ export function HeaderMenu({ className }: Props) {
 				<DropdownMenuContent
 					align="end"
 					side="bottom"
-					className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+					className="font-poppins min-w-55 text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
 					{walletAccount && (
 						<>
@@ -63,14 +63,28 @@ export function HeaderMenu({ className }: Props) {
 					>
 						<Link href="/tokens">All Tokens</Link>
 					</DropdownMenuItem>
+
 					<DropdownMenuSeparator />
+
 					<DropdownMenuItem asChild>
 						<Link
-							href="https://app.rivrdex.com"
+							href="https://app.rivrdex.io"
+							target="_blank"
+							rel="noreferrer"
+							className="flex-col items-start gap-2"
+						>
+							<span>List on RivrDEX [Mainnet]</span>
+							<span className="text-[10px]">(coming soon)</span>
+						</Link>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem asChild>
+						<Link
+							href="https://stg-app.rivrdex.io/"
 							target="_blank"
 							rel="noreferrer"
 						>
-							List on RivrDEX
+							List on RivrDEX [Testnet]
 						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuContent>

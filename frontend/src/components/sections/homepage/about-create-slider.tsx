@@ -94,7 +94,7 @@ export function AboutCreateSlider() {
 				}}
 				className="overflow-hidden"
 			>
-				<div className="whitespace-nowrap px-4 py-2 text-[12px] leading-7 sm:py-0 sm:text-[16px]">
+				<div className="px-4 py-2 text-[12px] leading-7 whitespace-nowrap sm:py-0 sm:text-[16px]">
 					<CarouselContent
 						classNameWrapper="overflow-visible"
 						className="-ml-8 touch-pan-y md:ml-0 xl:justify-center"
@@ -164,7 +164,7 @@ export function AboutCreateSlider() {
 										/>
 									</picture>
 								</div>
-								<div className="absolute bottom-0 left-[calc(var(--offset)+1rem)] right-4 max-w-[400px] rounded-lg bg-primary p-5 sm:left-[calc(var(--offset)/2)] sm:right-0">
+								<div className="bg-primary absolute right-4 bottom-0 left-[calc(var(--offset)+1rem)] max-w-[400px] rounded-lg p-5 sm:right-0 sm:left-[calc(var(--offset)/2)]">
 									<p className="font-silkscreen text-[15px] leading-[1.4] text-[#242424] sm:text-[18px]">
 										{quote}
 									</p>

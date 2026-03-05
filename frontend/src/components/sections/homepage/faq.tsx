@@ -15,9 +15,9 @@ type Props = {
 export function HomepageFAQ({ className }: Props) {
 	return (
 		<section
-			className={cn('container pb-12.5 pt-25 sm:py-18 lg:py-25', className)}
+			className={cn('container pt-25 pb-12.5 sm:py-18 lg:py-25', className)}
 		>
-			<h2 className="text-center text-[32px] leading-none text-primary">FAQ</h2>
+			<h2 className="text-primary text-center text-[32px] leading-none">FAQ</h2>
 			<Accordion
 				className="mx-auto mt-8 grid max-w-[920px] gap-y-4 sm:gap-y-8 lg:gap-y-5"
 				type="multiple"
@@ -34,11 +34,11 @@ export function HomepageFAQ({ className }: Props) {
 							<span className="shrink-0 grow-0">
 								<Sprite
 									name="accordion-minus"
-									className="hidden size-8 group-radix-state-open:block sm:size-10"
+									className="group-radix-state-open:block hidden size-8 sm:size-10"
 								/>
 								<Sprite
 									name="accordion-plus"
-									className="size-8 group-radix-state-open:hidden sm:size-10"
+									className="group-radix-state-open:hidden size-8 sm:size-10"
 								/>
 							</span>
 						</AccordionTrigger>
@@ -68,8 +68,8 @@ const QA = [
 					standard VFT (Vara Fungible Token) smart contract in minutes -
 					memecoins, utility tokens, DAO governance tokens, reward points, or
 					anything else. You set the name, supply, symbol, and logo. The
-					contract is deployed automatically, and full ownership belongs to
-					you. The platform has zero admin access to your token.
+					contract is deployed automatically, and full ownership belongs to you.
+					The platform has zero admin access to your token.
 				</p>
 			</>
 		),
@@ -81,7 +81,7 @@ const QA = [
 				<p>
 					Connect your{' '}
 					<Link
-						href="https://wiki.vara.network/docs/account/create-account"
+						href="https://wiki.vara.network/docs/account"
 						className="link link-primary"
 						target="_blank"
 						rel="noreferrer"
@@ -90,8 +90,8 @@ const QA = [
 					</Link>
 					, then click &quot;Create token.&quot; Fill in the name, description,
 					symbol, supply, and any additional settings - social links,
-					tokenomics, logo. Hit deploy, and your VFT smart contract goes live
-					on Vara Network automatically. No code required.
+					tokenomics, logo. Hit deploy, and your VFT smart contract goes live on
+					Vara Network automatically. No code required.
 				</p>
 			</>
 		),
@@ -116,8 +116,8 @@ const QA = [
 				<p>
 					Once deployed, transfer tokens directly to any Vara address via the
 					portal. Your distribution strategy is entirely up to you - airdrops,
-					community rewards, vesting schedules, public sales, or anything
-					else. Your token, your rules.
+					community rewards, vesting schedules, public sales, or anything else.
+					Your token, your rules.
 				</p>
 			</>
 		),
@@ -129,12 +129,21 @@ const QA = [
 				<p>
 					Yes. The easiest way is to list directly on{' '}
 					<Link
-						href="https://app.rivrdex.com"
+						href="https://app.rivrdex.io"
 						className="link link-primary"
 						target="_blank"
 						rel="noreferrer"
 					>
-						RivrDEX
+						RivrDEX [Mainnet]
+					</Link>{' '}
+					(coming soon) or{' '}
+					<Link
+						href="https://stg-app.rivrdex.io"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Testnet]
 					</Link>{' '}
 					- the native decentralized exchange on Vara Network. After deploying
 					your token, head to RivrDEX, create a liquidity pool, and your token
@@ -145,7 +154,8 @@ const QA = [
 		),
 	},
 	{
-		question: "What should I consider when setting up my token's initial supply?",
+		question:
+			"What should I consider when setting up my token's initial supply?",
 		answer: (
 			<>
 				<p>
@@ -163,11 +173,11 @@ const QA = [
 		answer: (
 			<>
 				<p>
-					Your token contract is deployed using the audited VFT standard on
-					Vara Network, and the platform holds no admin keys. For broader
-					security: communicate transparently with your community, use secure
-					distribution practices, and - if you plan to build significant value
-					around the token - consider a third-party audit.
+					Your token contract is deployed using the audited VFT standard on Vara
+					Network, and the platform holds no admin keys. For broader security:
+					communicate transparently with your community, use secure distribution
+					practices, and - if you plan to build significant value around the
+					token - consider a third-party audit.
 				</p>
 			</>
 		),
@@ -177,9 +187,9 @@ const QA = [
 		answer: (
 			<>
 				<p>
-					Not at all. Tokenator handles smart contract deployment
-					automatically - no Solidity, no Rust, no CLI. If you can fill in a
-					form, you can launch a token on Vara Network.
+					Not at all. Tokenator handles smart contract deployment automatically
+					- no Solidity, no Rust, no CLI. If you can fill in a form, you can
+					launch a token on Vara Network.
 				</p>
 			</>
 		),
@@ -196,15 +206,15 @@ const QA = [
 				<p>
 					Note: the{' '}
 					<Link
-						href="https://wiki.polkadot.network/docs/build-protocol-info#existential-deposit"
+						href="https://docs.polkadot.com/reference/glossary/#existential-deposit"
 						className="link link-primary"
 						target="_blank"
 						rel="noreferrer"
 					>
 						Existential Deposit
 					</Link>{' '}
-					on the Vara Network is 10 VARA, so keep at least 11 VARA in your
-					account to stay active and cover transactions.
+					on the Vara Network is 1 VARA, so keep at least 2 VARA in your account
+					to stay active and cover transactions.
 				</p>
 			</>
 		),
@@ -217,15 +227,24 @@ const QA = [
 					Start by giving your token real utility or a compelling story. Share
 					it on X, crypto forums, and community chats. List it on{' '}
 					<Link
-						href="https://app.rivrdex.com"
+						href="https://app.rivrdex.io"
 						className="link link-primary"
 						target="_blank"
 						rel="noreferrer"
 					>
-						RivrDEX
+						RivrDEX [Mainnet]
 					</Link>{' '}
-					so anyone can trade it instantly. Airdrops, early-holder rewards,
-					and partnerships are great ways to grow an initial community.
+					(coming soon) or{' '}
+					<Link
+						href="https://stg-app.rivrdex.io"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Testnet]
+					</Link>{' '}
+					so anyone can trade it instantly. Airdrops, early-holder rewards, and
+					partnerships are great ways to grow an initial community.
 				</p>
 				<p>
 					Whatever your token is for - a meme, a project, a DAO - a clear

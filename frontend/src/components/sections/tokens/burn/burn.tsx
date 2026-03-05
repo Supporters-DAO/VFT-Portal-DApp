@@ -101,6 +101,7 @@ export const BurnCoin = ({ token }: Props) => {
 											/>
 										</>
 									}
+									delay={0}
 								>
 									<p className="max-w-60 text-center">
 										Сan`t be greater than total supply

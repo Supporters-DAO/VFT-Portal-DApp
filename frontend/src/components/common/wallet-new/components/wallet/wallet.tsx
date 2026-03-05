@@ -90,19 +90,20 @@ export function Wallet({
 									address={account?.address || walletAccount?.address}
 									name={account?.meta.name || walletAccount?.meta.name}
 									onClick={() => setOpenDropDown(!isOpenDropDown)}
-									className="cursor-pointer rounded-lg border-2 border-primary bg-[#0F1B34] p-4 px-6 text-xs font-bold text-primary"
+									className="border-primary text-primary cursor-pointer rounded-lg border-2 bg-[#0F1B34] p-4 px-6 text-xs font-bold"
 								/>
 							</div>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
 							align="end"
 							side="bottom"
-							className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+							className="font-poppins min-w-55 text-[14px] leading-none tracking-[0.03em] md:mt-2"
 						>
 							<DropdownMenuItem asChild className="text-[#FDFDFD]">
 								<Link
 									href={`https://vara.subscan.io/account/${account?.address}`}
 									target="_blank"
+									rel="noreferrer"
 								>
 									<div className="flex items-center gap-5">
 										<Sprite name="cube" className="size-5" />
@@ -131,7 +132,7 @@ export function Wallet({
 					</DropdownMenu>
 				) : (
 					<button
-						className="btn btn--outline min-h-11 p-4 text-[9px] leading-none text-primary sm:min-h-0 sm:text-xs md:px-6"
+						className="btn btn--outline text-primary min-h-11 p-4 text-[9px] leading-none sm:min-h-0 sm:text-xs md:px-6"
 						onClick={openModal}
 					>
 						Connect Wallet

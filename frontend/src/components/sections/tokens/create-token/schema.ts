@@ -11,6 +11,52 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const optionalHttpsUrl = z.url({ protocol: /^https$/ }).or(z.literal(''))
 
+const telegramUrl = z.url({
+	protocol: /^https$/,
+	hostname: /^(t\.me)$/,
+})
+
+const twitterUrl = z.url({
+	protocol: /^https$/,
+	hostname: /^(x\.com)$/,
+})
+
+const telegramUsername = z
+	.string()
+	.regex(/^@[A-Za-z][A-Za-z0-9_]{4,31}$/, {
+		message:
+			'Telegram username must start with @ and contain 5-32 letters, digits, or underscores',
+	})
+	.transform((value) => `https://t.me/${value.slice(1)}`)
+
+const twitterUsername = z
+	.string()
+	.regex(/^@[A-Za-z0-9_]{1,15}$/, {
+		message:
+			'Twitter username must start with @ and contain up to 15 letters, digits, or underscores',
+	})
+	.transform((value) => `https://x.com/${value.slice(1)}`)
+
+// related to: https://github.com/colinhacks/zod/issues/3675
+const handleUnionError = (_: string, ctx: z.core.$RefinementCtx<string>) => {
+	if (!ctx.issues.length) return
+
+	ctx.issues = []
+
+	ctx.addIssue({
+		code: 'custom',
+		message: 'Invalid URL or username',
+	})
+}
+
+const telegramLinkSchema = z
+	.union([telegramUrl, telegramUsername, z.literal('')])
+	.superRefine(handleUnionError)
+
+const twitterLinkSchema = z
+	.union([twitterUrl, twitterUsername, z.literal('')])
+	.superRefine(handleUnionError)
+
 export const createTokenSchema = z
 	.object({
 		name: z
@@ -49,13 +95,15 @@ export const createTokenSchema = z
 				'Only .jpg, .jpeg, .png and .webp .gif formats are supported.'
 			)
 			.transform((value) => value ?? null),
+
 		external_links: z.object({
 			website: optionalHttpsUrl,
-			telegram: optionalHttpsUrl,
-			twitter: optionalHttpsUrl,
+			telegram: telegramLinkSchema,
+			twitter: twitterLinkSchema,
 			discord: optionalHttpsUrl,
 			tokenomics: optionalHttpsUrl,
 		}),
+
 		initial_supply: z.nullable(
 			z
 				.number()

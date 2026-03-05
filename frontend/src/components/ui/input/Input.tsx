@@ -42,6 +42,7 @@ export function Input({
 								/>
 							</>
 						}
+						delay={0}
 					>
 						<p className="max-w-60 text-center">{tooltip}</p>
 					</TooltipContainer>

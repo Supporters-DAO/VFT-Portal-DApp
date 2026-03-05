@@ -42,7 +42,7 @@ type Props = {
 
 function SocialLink({ platform, href }: { platform: string; href: string }) {
 	return (
-		<Link href={href} target="_blank" rel="noopener noreferrer">
+		<Link href={href} target="_blank" rel="noreferrer">
 			<Sprite name={platform} color="#B4FF69" className="size-[26px]" />
 		</Link>
 	)
@@ -115,17 +115,17 @@ export function Token({ token: { id, ...token } }: Props) {
 				</div>
 				<div className="max-sm:col-span-1 max-sm:col-start-2 max-sm:w-full max-sm:content-center md:w-max">
 					<div className="gap-0 sm:flex sm:flex-col sm:items-baseline sm:gap-4">
-						<h2 className="font-ps2p text-[32px] text-primary max-sm:text-[16px]">
+						<h2 className="font-ps2p text-primary text-[32px] max-sm:text-[16px]">
 							{token.name}
 						</h2>
-						<div className="mt-2 flex flex-col gap-0 font-poppins text-[24px] font-semibold text-white/[80%] max-sm:text-[14px] md:mt-0 md:flex-row md:gap-2">
+						<div className="font-poppins mt-2 flex flex-col gap-0 text-[24px] font-semibold text-white/[80%] max-sm:text-[14px] md:mt-0 md:flex-row md:gap-2">
 							{tokenBalance && <span>{formattedBalance}</span>}
 							<span>{token.symbol}</span>
 						</div>
 					</div>
 				</div>
 				<div className="col-span-2 col-start-2 row-start-4 max-sm:col-span-3 max-sm:col-start-1 max-sm:row-start-2 max-sm:text-[14px]">
-					<div className="flex items-center gap-3 font-poppins">
+					<div className="font-poppins flex items-center gap-3">
 						<button className="flex items-center gap-2" onClick={onCopyAddress}>
 							<Sprite name="copy" color="#B4FF69" className="size-4" />
 							{prettyWord(id, 4)}
@@ -135,11 +135,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							Share link
 						</button>
 						{tokenomicsHref && (
-							<Link
-								href={tokenomicsHref}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
+							<Link href={tokenomicsHref} target="_blank" rel="noreferrer">
 								<div className="flex items-center gap-2">
 									<Sprite
 										name="tokenomics"
@@ -238,15 +234,13 @@ export function Token({ token: { id, ...token } }: Props) {
 					</div>
 				</div>
 
-				<div className="col-span-2 col-start-2 row-start-5 font-poppins max-sm:col-span-3 max-sm:row-start-4 max-sm:text-[14px]">
+				<div className="font-poppins col-span-2 col-start-2 row-start-5 max-sm:col-span-3 max-sm:row-start-4 max-sm:text-[14px]">
 					<div className="flex flex-col gap-3 break-all">
 						<div>
 							<p>{token.description}</p>
 						</div>
 						<div className="flex items-center gap-6">
-							{websiteHref && (
-								<SocialLink platform="web" href={websiteHref} />
-							)}
+							{websiteHref && <SocialLink platform="web" href={websiteHref} />}
 							{twitterHref && (
 								<SocialLink platform="twitter" href={twitterHref} />
 							)}
@@ -258,7 +252,7 @@ export function Token({ token: { id, ...token } }: Props) {
 							)}
 						</div>
 					</div>
-					<div className="my-5 flex items-center gap-3 max-sm:w-full  max-sm:justify-between max-sm:gap-1">
+					<div className="my-5 flex items-center gap-3 max-sm:w-full max-sm:justify-between max-sm:gap-1">
 						{tokenBalance && BigInt(tokenBalance) > 0 && walletAccount && (
 							<Link href={`/tokens/${id}/send/`}>
 								<button className="btn items-center py-3 font-medium max-sm:w-25 max-sm:px-2">

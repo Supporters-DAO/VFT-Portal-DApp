@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils'
 
 export function Footer() {
 	return (
-		<footer className="container pb-20 pt-12.5 font-poppins md:pb-45 md:pt-18 lg:pb-12 lg:pt-25">
+		<footer className="font-poppins container pt-12.5 pb-20 md:pt-18 md:pb-45 lg:pt-25 lg:pb-12">
 			<div className="flex justify-between gap-5 max-lg:flex-wrap max-lg:items-center sm:gap-10">
 				{/*Link*/}
 				<div className="">
-					<Link href="/" className="transition-opacity hocus:opacity-80">
+					<Link href="/" className="hocus:opacity-80 transition-opacity">
 						<span className="sr-only">Tokenator Logo</span>
 						<Sprite
 							name="logo-tokenator"
@@ -28,7 +28,7 @@ export function Footer() {
 								: 'mt-0 max-sm:border-t max-sm:border-[#FDFDFD]/[2%] max-sm:pt-5'
 						)}
 					>
-						<p className="text-[14px] font-semibold leading-normal text-[#FDFDFD]/80 sm:basis-60 sm:text-[22px] sm:text-[#FDFDFD]">
+						<p className="text-[14px] leading-normal font-semibold text-[#FDFDFD]/80 sm:basis-60 sm:text-[22px] sm:text-[#FDFDFD]">
 							{link.title}
 						</p>
 						<ul className="space-y-4 text-[14px] leading-normal sm:space-y-5 sm:text-[18px]">
@@ -37,8 +37,8 @@ export function Footer() {
 									<Link
 										href={item.url}
 										className="link-white"
-										target={item.url.includes('http') ? '_blank' : '_self'}
-										rel={item.url.includes('http') ? 'noreferrer' : undefined}
+										target={item.url.includes('https') ? '_blank' : '_self'}
+										rel={item.url.includes('https') ? 'noreferrer' : undefined}
 									>
 										{item.title}
 									</Link>
@@ -91,8 +91,12 @@ const LINKS = [
 				url: '/tokens/create',
 			},
 			{
-				title: 'List on RivrDEX',
-				url: 'https://app.rivrdex.com',
+				title: 'List on RivrDEX [Mainnet] (coming soon)',
+				url: 'https://app.rivrdex.io',
+			},
+			{
+				title: 'List on RivrDEX [Testnet]',
+				url: 'https://stg-app.rivrdex.io',
 			},
 		],
 	},
