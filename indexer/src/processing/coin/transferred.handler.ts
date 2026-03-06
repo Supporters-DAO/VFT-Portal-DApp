@@ -15,11 +15,14 @@ export class TransferredHandler implements ICoinEventHandler {
   ): Promise<void> {
     const { from, to, amount } = event;
     const coin = await storage.getCoin(address);
+
     if (coin === undefined) {
       console.warn(`[TransferredHandler] ${address}: coin is not found`);
       return;
     }
+
     const fromBalance = await storage.getAccountBalance(from, coin);
+
     storage.addTransfer(
       new Transfer({
         id: randomUUID(),
@@ -32,43 +35,57 @@ export class TransferredHandler implements ICoinEventHandler {
         extrinsicHash: txHash,
       })
     );
+
     if (from === NullAddress) {
       console.log(
         `from is NullAddress and amount is added to to account balance ${amount}`
       );
+
       fromBalance.balance += amount;
       const toBalance = await storage.getAccountBalance(to, coin);
+
       if (toBalance.balance === BigInt(0)) {
         coin.holders += 1;
       }
+
       toBalance.balance += amount;
+
       await storage.setAccountBalance(toBalance);
+
       coin.circulatingSupply = coin.circulatingSupply + amount;
     } else if (to === NullAddress) {
       deductBalance(fromBalance, amount);
+
       coin.circulatingSupply = coin.circulatingSupply - amount;
       coin.burned = coin.burned + amount;
     } else {
       fromBalance.balance -= amount;
+
       const toBalance = await storage.getAccountBalance(to, coin);
+
       if (toBalance.balance === BigInt(0)) {
         coin.holders += 1;
       }
+
       toBalance.balance += amount;
+
       await storage.setAccountBalance(toBalance);
-      if (!coin.admins.includes(to)) {
+
+      const isFromAdmin = coin.admins.includes(from);
+      const isToAdmin = coin.admins.includes(to);
+
+      if (isFromAdmin && !isToAdmin) {
         coin.distributed += amount;
+      } else if (!isFromAdmin && isToAdmin) {
+        coin.distributed -= amount;
       }
     }
+
     if (fromBalance.balance === BigInt(0)) {
       coin.holders -= 1;
     }
-    await storage.setAccountBalance(fromBalance);
 
-    await storage.setCoin(
-      new Coin({
-        ...coin,
-      })
-    );
+    await storage.setAccountBalance(fromBalance);
+    await storage.setCoin(new Coin({ ...coin }));
   }
 }
