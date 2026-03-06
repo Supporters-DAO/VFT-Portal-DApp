@@ -159,3 +159,39 @@ export function formatUnits(value: bigint, decimals: number) {
 		fraction ? `.${fraction}` : ''
 	}`
 }
+
+export function formatDistributedPercentage(
+	distributed: string,
+	maxSupply: string
+) {
+	const ZERO = BigInt(0)
+	const PERCENT_MULTIPLIER = BigInt(100)
+	const DECIMAL_SCALE = BigInt(100) // 2 digits after comma
+	const DECIMAL_DIGITS = 2
+
+	const distributedValue = BigInt(distributed)
+	const maxSupplyValue = BigInt(maxSupply)
+
+	if (distributedValue <= ZERO || maxSupplyValue <= ZERO) {
+		console.warn(
+			`Invalid values for distributed (${distributed}) or maxSupply (${maxSupply}). Both should be positive integers.`
+		)
+
+		return '0'
+	}
+
+	const scaledPercent =
+		(distributedValue * PERCENT_MULTIPLIER * DECIMAL_SCALE) / maxSupplyValue
+
+	if (scaledPercent === ZERO) return '0'
+
+	const integerPart = scaledPercent / DECIMAL_SCALE
+	const fractionalPart = scaledPercent % DECIMAL_SCALE
+
+	if (fractionalPart === ZERO) return integerPart.toString()
+
+	return `${integerPart}.${fractionalPart
+		.toString()
+		.padStart(DECIMAL_DIGITS, '0')
+		.replace(/0+$/, '')}`
+}

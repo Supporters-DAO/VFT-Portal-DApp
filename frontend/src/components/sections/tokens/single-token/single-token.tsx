@@ -5,7 +5,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { Sprite } from '@/components/ui/sprite'
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
 import { getSafeHttpsUrl, getSafeImageSrc } from '@/lib/sanitize'
 import { useAlert } from '@gear-js/react-hooks'
 import { BackButton } from '@/components/common/back-button'
@@ -175,10 +180,10 @@ export function Token({ token: { id, ...token } }: Props) {
 									Distributed
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
-									{(
-										(BigInt(token.distributed) * BigInt(100)) /
-										BigInt(token.maxSupply)
-									).toString()}
+									{formatDistributedPercentage(
+										token.distributed,
+										token.maxSupply
+									)}
 									%
 								</p>
 							</div>

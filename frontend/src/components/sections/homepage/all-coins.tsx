@@ -1,7 +1,7 @@
 'use client'
 
 import { getSafeImageSrc } from '@/lib/sanitize'
-import { cn } from '@/lib/utils'
+import { cn, formatDistributedPercentage } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -66,10 +66,10 @@ export function AllCoins({ className }: Props) {
 									</h3>
 									<p className="font-silkscreen text-[12px]/[15px] text-[#8B2786] md:text-[18px]/[1.4]">
 										Distributed:{' '}
-										{(
-											(BigInt(coin.distributed) * BigInt(100)) /
-											BigInt(coin.maxSupply)
-										).toString()}
+										{formatDistributedPercentage(
+											coin.distributed,
+											coin.maxSupply
+										)}
 										%
 									</p>
 								</div>

@@ -2,7 +2,12 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
 import { getSafeImageSrc } from '@/lib/sanitize'
 import { Sprite } from '@/components/ui/sprite'
 import {
@@ -126,10 +131,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'distributed',
 		cell: (info) => (
 			<div className="text-right">
-				{(
-					(BigInt(info.row.original.distributed) * BigInt(100)) /
-					BigInt(info.row.original.maxSupply)
-				).toString()}
+				{formatDistributedPercentage(
+					info.row.original.distributed,
+					info.row.original.maxSupply
+				)}
 				%
 			</div>
 		),

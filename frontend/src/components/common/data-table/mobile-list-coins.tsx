@@ -18,7 +18,12 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
 
 import * as Separator from '@radix-ui/react-separator'
 import {
@@ -151,10 +156,10 @@ export function MobileList({ data }: ContentLayoutProps) {
 										<div className="flex justify-between">
 											<span className="text-[#FDFDFD]/[80%]">Distributed</span>
 											<span className="text-[#FDFDFD]">
-												{(
-													(BigInt(i.distributed) * BigInt(100)) /
-													BigInt(i.maxSupply)
-												).toString()}
+												{formatDistributedPercentage(
+													i.distributed,
+													i.maxSupply
+												)}
 												%
 											</span>
 										</div>
