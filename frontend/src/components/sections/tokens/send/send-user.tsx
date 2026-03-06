@@ -10,10 +10,11 @@ import { useMessages } from '@/lib/sails/use-send-message-ft'
 
 type Props = {
 	id: HexString
+	tokenBalance: string
 	decimals: number
 }
 
-export const SendUser = ({ id, decimals }: Props) => {
+export const SendUser = ({ id, tokenBalance, decimals }: Props) => {
 	const router = useRouter()
 
 	const [isPending, setIsPending] = useState(false)
@@ -65,14 +66,20 @@ export const SendUser = ({ id, decimals }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn mx-auto mt-5 w-1/2 py-4 font-ps2p disabled:bg-[#D0D3D9]"
-				disabled={address?.length === 0 || !value || value <= 0 || isPending}
+				className="btn font-ps2p mx-auto mt-5 w-1/2 py-4 disabled:bg-[#D0D3D9]"
+				disabled={
+					address?.length === 0 ||
+					!value ||
+					value <= 0 ||
+					isPending ||
+					!(value <= BigInt(tokenBalance))
+				}
 				onClick={onSendCoins}
 			>
 				{isPending ? (
 					<span className="mx-auto flex w-max">
 						Pending
-						<span className="w-6 after:flex after:animate-dots after:content-['']"></span>
+						<span className="after:animate-dots w-6 after:flex after:content-['']"></span>
 					</span>
 				) : (
 					'Send'

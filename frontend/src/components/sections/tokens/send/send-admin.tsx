@@ -110,11 +110,9 @@ export const SendAdmin = ({ id, tokenBalance, decimals }: Props) => {
 				<ScrollArea className="pr-4" type={isScrollable ? 'always' : undefined}>
 					<div
 						className="relative grid gap-2"
-						style={{
-							minHeight: parentHeight,
-						}}
+						style={{ minHeight: parentHeight }}
 					>
-						<Sprite name="enter" className="absolute bottom-0 right-0 size-4" />
+						<Sprite name="enter" className="absolute right-0 bottom-0 size-4" />
 						<textarea
 							ref={textAreaRef}
 							rows={1}
@@ -140,7 +138,7 @@ export const SendAdmin = ({ id, tokenBalance, decimals }: Props) => {
 				/>
 			</div>
 			<button
-				className="btn mx-auto mt-5 flex w-full justify-center py-4 font-ps2p disabled:bg-[#D0D3D9]"
+				className="btn font-ps2p mx-auto mt-5 flex w-full justify-center py-4 disabled:bg-[#D0D3D9]"
 				disabled={
 					addresses.length === 0 ||
 					!value ||
@@ -153,7 +151,7 @@ export const SendAdmin = ({ id, tokenBalance, decimals }: Props) => {
 				{isPending ? (
 					<span className="mx-auto flex w-max">
 						Pending
-						<span className="w-6 after:flex after:animate-dots after:content-['']"></span>
+						<span className="after:animate-dots w-6 after:flex after:content-['']"></span>
 					</span>
 				) : (
 					'Send'
