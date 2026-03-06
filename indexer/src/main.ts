@@ -9,6 +9,7 @@ import { getLocalStorage } from "./processing/storage/local.storage";
 import { BatchService } from "./processing/batch.service";
 import { getMemeFactoryEventsParser } from "./types/factory.events";
 import { getCoinEventsParser } from "./types/coin.events";
+import { isSailsEvent, isUserMessageSentEvent } from "./utils";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -24,34 +25,40 @@ function getBlockDate(
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const localStorage = await getLocalStorage(ctx.store);
+
   const entitiesService = new EntitiesService(
     localStorage,
     new BatchService(ctx.store)
   );
+
   const memeFactoryParser = await getMemeFactoryEventsParser();
   const coinParser = await getCoinEventsParser();
+
   const processing = new EventsProcessing(
     entitiesService,
     memeFactoryParser,
     coinParser
   );
+
   const firstBlockDate = getBlockDate(ctx.blocks[0]);
+
   console.log(
     `[main] start processing ${ctx.blocks.length} blocks at ${firstBlockDate}.`
   );
+
   for (const block of ctx.blocks) {
     const { events } = block;
     const timestamp = getBlockDate(block);
-    for (const item of events) {
+
+    for (const event of events) {
       const {
         message: { source, payload, details, destination, id },
-      } = item.args;
-      if (payload === "0x") {
-        continue;
-      }
-      if (details && details.code.__kind !== "Success") {
-        continue;
-      }
+      } = event.args;
+
+      if (payload === "0x") continue;
+      if (!isUserMessageSentEvent(event) || !isSailsEvent(event)) continue;
+      if (details && details.code.__kind !== "Success") continue;
+
       const eventInfo: EventInfo = {
         blockNumber: block.header.height,
         destination,
@@ -60,15 +67,16 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         messageId: id,
         txHash: id,
       };
+
       if (localStorage.getFactory().address === source) {
         await processing.handleFactoryEvent(payload, eventInfo);
       } else {
         const coin = await localStorage.getCoin(source);
-        if (coin) {
-          await processing.handleCoinEvent(payload, eventInfo);
-        }
+
+        if (coin) await processing.handleCoinEvent(payload, eventInfo);
       }
     }
   }
+
   await processing.saveAll();
 });
