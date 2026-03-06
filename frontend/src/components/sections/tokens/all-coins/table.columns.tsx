@@ -103,7 +103,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-center">Circ. Supply</div>
+			<div className="group flex items-center justify-center">Total Supply</div>
 		),
 		enableSorting: false,
 	},

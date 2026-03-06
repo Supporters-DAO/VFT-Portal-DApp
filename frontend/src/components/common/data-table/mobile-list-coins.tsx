@@ -143,7 +143,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 											</span>
 										</div>
 										<div className="flex justify-between">
-											<span className="text-[#FDFDFD]/[80%]">Circ. Supply</span>
+											<span className="text-[#FDFDFD]/[80%]">Total Supply</span>
 											<span className="text-[#FDFDFD]">
 												{format(i.circulatingSupply)}
 											</span>

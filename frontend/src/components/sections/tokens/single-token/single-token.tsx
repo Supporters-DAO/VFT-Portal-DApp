@@ -162,7 +162,7 @@ export function Token({ token: { id, ...token } }: Props) {
 						<div className="w-full bg-[#FDFDFD]/[2%]">
 							<div className="flex w-full items-center justify-between p-3">
 								<span className="font-poppins text-[12px] font-semibold text-[#FDFDFD]/[80%]">
-									Circulating supply
+									Total Supply
 								</span>{' '}
 								<p className="ml-2 text-[x-small]">
 									{formatUnits(BigInt(token.circulatingSupply), token.decimals)}

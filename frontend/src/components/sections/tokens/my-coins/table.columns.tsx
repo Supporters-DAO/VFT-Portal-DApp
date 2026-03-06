@@ -44,7 +44,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 					}}
 				/>
 				{info?.row?.original?.isAdmin && (
-					<p className="-m-2 w-max rounded-sm bg-white p-1 font-ps2p text-[8px] uppercase text-black">
+					<p className="font-ps2p -m-2 w-max rounded-sm bg-white p-1 text-[8px] text-black uppercase">
 						Creator
 					</p>
 				)}
@@ -117,7 +117,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-center">Circ. Supply</div>
+			<div className="group flex items-center justify-center">Total Supply</div>
 		),
 		enableSorting: false,
 	},
@@ -233,7 +233,7 @@ function Buttons(
 				<DropdownMenuContent
 					align="end"
 					side="bottom"
-					className="min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+					className="font-poppins min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
 					<DropdownMenuItem
 						onClick={(e: { stopPropagation: () => void }) => {
