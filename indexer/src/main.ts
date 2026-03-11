@@ -25,7 +25,13 @@ function getBlockDate(
   return new Date(block.header.timestamp ?? Date.now());
 }
 
-processor.run(new TypeormDatabase(), async (ctx) => {
+processor.run(
+  new TypeormDatabase({
+    stateSchema: process.env.STATE_SCHEMA ?? "memecoin_processor",
+    isolationLevel: "READ COMMITTED",
+    supportHotBlocks: true,
+  }),
+  async (ctx) => {
   const localStorage = await getLocalStorage(ctx.store);
   const dnsService = await getDnsService(config.dnsApiUrl);
 

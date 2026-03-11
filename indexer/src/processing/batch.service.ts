@@ -52,6 +52,7 @@ export class BatchService {
     this.coins = [];
     this.transfers = [];
     this.events = [];
+    this.accountBalances = [];
     this.coinsToRemove = [];
     this.factory = null;
   }

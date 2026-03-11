@@ -48,6 +48,7 @@ export class LocalStorage implements IStorage {
   setStore(store: Store) {
     this.store = store;
     this.coins = {};
+    this.accounts = {};
   }
 
   async getCoin(address: string): Promise<Coin | undefined> {
