@@ -2,8 +2,8 @@ import {
   Entity as Entity_,
   Column as Column_,
   PrimaryColumn as PrimaryColumn_,
-  ManyToOne as ManyToOne_,
   Index as Index_,
+  ManyToOne as ManyToOne_,
   OneToMany as OneToMany_,
 } from "typeorm";
 import * as marshal from "./marshal";
@@ -22,6 +22,10 @@ export class Coin {
    */
   @PrimaryColumn_()
   id!: string;
+
+  @Index_()
+  @Column_("text", { nullable: false })
+  memeId!: string;
 
   @Column_("text", { nullable: false })
   name!: string;

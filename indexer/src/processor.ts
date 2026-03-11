@@ -31,6 +31,10 @@ export const processor = new SubstrateBatchProcessor()
   })
   .setBlockRange({ from: config.minBlockNum });
 
+if (config.gateway) {
+  processor.setGateway(config.gateway);
+}
+
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
 export type Event = _Event<Fields>;

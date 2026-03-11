@@ -9,6 +9,7 @@ type Factory @entity {
 type Coin @entity {
   "Coin address"
   id: ID!
+  memeId: String! @index
   name: String!
   symbol: String!
   decimals: Int!

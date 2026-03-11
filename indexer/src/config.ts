@@ -14,4 +14,8 @@ export const config = {
   factoryProgram: checkEnv("FACTORY_PROGRAM"),
   rateLimit: Number.parseInt(checkEnv("RATE_LIMIT", "100")),
   minBlockNum: Number.parseInt(checkEnv("MIN_BLOCK_NUMBER", "0")),
+  dnsApiUrl:
+    process.env.DNS_API_URL || "https://stg-dns-explorer.gear.foundation",
+  dnsProgramName: process.env.DNS_PROGRAM_NAME || "tokenator.club",
+  gateway: process.env.SQUID_GATEWAY,
 };

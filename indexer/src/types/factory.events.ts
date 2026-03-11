@@ -41,12 +41,19 @@ export async function getMemeFactoryEventsParser(): Promise<MemeFactoryEventsPar
 
 export enum FactoryEventType {
   MemeCreated = "MemeCreated",
+  MemeRemoved = "MemeRemoved",
 }
 
 export type MemeCreatedEvent = {
   type: FactoryEventType.MemeCreated;
   address: string;
+  memeId: string;
   config: CreatedConfig;
+};
+
+export type MemeRemovedEvent = {
+  type: FactoryEventType.MemeRemoved;
+  memeId: string;
 };
 
 export type CreatedConfig = {
@@ -66,7 +73,7 @@ export type CreatedConfig = {
   tokenomics?: string | null;
 };
 
-export type FactoryEvent = MemeCreatedEvent;
+export type FactoryEvent = MemeCreatedEvent | MemeRemovedEvent;
 
 export class MemeFactoryEventsParser {
   private sails?: Sails;
@@ -101,6 +108,7 @@ export class MemeFactoryEventsParser {
         return {
           type: FactoryEventType.MemeCreated,
           address: event.meme_address.toString(),
+          memeId: event.meme_id.toString(),
           config: {
             name: event.init.name,
             symbol: event.init.symbol,
@@ -117,6 +125,15 @@ export class MemeFactoryEventsParser {
             website: event.init.external_links.website,
             tokenomics: event.init.external_links.tokenomics,
           },
+        };
+      }
+      case "MemeRemoved": {
+        const event = ev as {
+          meme_id: number | string;
+        };
+        return {
+          type: FactoryEventType.MemeRemoved,
+          memeId: event.meme_id.toString(),
         };
       }
     }

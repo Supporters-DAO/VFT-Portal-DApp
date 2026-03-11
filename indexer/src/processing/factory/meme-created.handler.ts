@@ -12,6 +12,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
   ): Promise<void> {
     const {
       address,
+      memeId,
       config: {
         name,
         symbol,
@@ -36,6 +37,7 @@ export class MemeCreatedHandler implements IFactoryEventHandler {
     }
     const coin = new Coin({
       id: address,
+      memeId,
       name,
       symbol,
       decimals,

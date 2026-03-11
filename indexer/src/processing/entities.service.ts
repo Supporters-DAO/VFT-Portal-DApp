@@ -9,12 +9,26 @@ import { randomUUID } from "node:crypto";
 import { IStorage } from "./storage/storage.inteface";
 import { BatchService } from "./batch.service";
 import { NullAddress } from "../consts";
+import { DnsService } from "../dns/dns.service";
+import { config } from "../config";
 
 export class EntitiesService {
   constructor(
     private readonly storage: IStorage,
-    private readonly batchService: BatchService
+    private readonly batchService: BatchService,
+    private readonly dnsService: DnsService
   ) {}
+
+  async init() {
+    const factory = await this.storage.getFactory();
+    const dnsAddress = await this.dnsService.getAddressByName(
+      config.dnsProgramName
+    );
+    if (dnsAddress && factory.address !== dnsAddress) {
+      factory.address = dnsAddress;
+      await this.setFactory(factory);
+    }
+  }
 
   async saveAll() {
     await this.batchService.saveAll();
@@ -24,8 +38,22 @@ export class EntitiesService {
     return this.storage.getFactory();
   }
 
+  setFactory(factory: Factory) {
+    this.storage.setFactory(factory);
+    this.batchService.addFactory(factory);
+  }
+
   async getCoin(contract: string) {
     return this.storage.getCoin(contract);
+  }
+
+  async getCoinByMemeId(memeId: string) {
+    return this.storage.getByMemeId(memeId);
+  }
+
+  async removeCoin(coin: Coin) {
+    await this.storage.removeCoin(coin);
+    this.batchService.removeCoin(coin);
   }
 
   async getAccountBalance(

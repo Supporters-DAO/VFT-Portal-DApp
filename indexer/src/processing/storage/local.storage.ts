@@ -41,6 +41,10 @@ export class LocalStorage implements IStorage {
     return this.factory!;
   }
 
+  setFactory(factory: Factory) {
+    this.factory = factory;
+  }
+
   setStore(store: Store) {
     this.store = store;
     this.coins = {};
@@ -53,8 +57,16 @@ export class LocalStorage implements IStorage {
     return this.store.findOne(Coin, { where: { id: address } });
   }
 
+  async getByMemeId(memeId: string): Promise<Coin | undefined> {
+    return this.store.findOne(Coin, { where: { memeId } });
+  }
+
   async updateCoin(coin: Coin): Promise<void> {
     this.coins[coin.id] = coin;
+  }
+
+  async removeCoin(coin: Coin): Promise<void> {
+    delete this.coins[coin.id];
   }
 
   async getAccountBalance(
