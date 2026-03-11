@@ -5,9 +5,9 @@ import {
   MemcoinFactoryEvent,
   Transfer,
 } from "../model";
+import { randomUUID } from "node:crypto";
 import { IStorage } from "./storage/storage.inteface";
 import { BatchService } from "./batch.service";
-import { v4 as uuidv4 } from "uuid";
 import { NullAddress } from "../consts";
 import { DnsService } from "../dns/dns.service";
 import { config } from "../config";
@@ -66,7 +66,7 @@ export class EntitiesService {
     );
     if (accountBalance === undefined) {
       return new AccountBalance({
-        id: uuidv4(),
+        id: randomUUID(),
         address,
         coin,
         balance: BigInt(0),
@@ -100,7 +100,7 @@ export class EntitiesService {
   async addEvent(event: Omit<MemcoinFactoryEvent, "factory" | "id">) {
     const entity = new MemcoinFactoryEvent({
       ...event,
-      id: uuidv4(),
+      id: randomUUID(),
       factory: this.storage.getFactory(),
     } as MemcoinFactoryEvent);
     this.batchService.addEvent(entity);

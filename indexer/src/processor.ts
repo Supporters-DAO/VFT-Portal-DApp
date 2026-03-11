@@ -1,4 +1,3 @@
-import { assertNotNull } from "@subsquid/util-internal";
 import {
   BlockHeader,
   DataHandlerContext,
@@ -13,7 +12,7 @@ import { hostname } from "os";
 
 export const processor = new SubstrateBatchProcessor()
   .setRpcEndpoint({
-    url: assertNotNull(process.env.RPC_ENDPOINT),
+    url: config.rpcEndpoint,
     rateLimit: config.rateLimit,
     headers: {
       "User-Agent": hostname(),

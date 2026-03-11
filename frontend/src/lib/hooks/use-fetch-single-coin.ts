@@ -23,8 +23,8 @@ export const useFetchToken = (id: string, trigger?: boolean) => {
 	const [token, setToken] = useState<IToken>()
 	const { walletAccount } = useAuth()
 
-	const query = `{
-        coinById(id: "${id}") {
+	const query = `query TokenById($id: String!) {
+        coinById(id: $id) {
             description
             decimals
             distributed
@@ -50,7 +50,7 @@ export const useFetchToken = (id: string, trigger?: boolean) => {
 	const options = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ query: query }),
+		body: JSON.stringify({ query, variables: { id } }),
 	}
 
 	useEffect(() => {

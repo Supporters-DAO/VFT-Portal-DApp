@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type JSX } from 'react';
 import { AnimationPlaybackControls, useAnimate, useInView } from 'framer-motion'
 import { cn } from '@/lib/utils'
 

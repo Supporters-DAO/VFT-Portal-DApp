@@ -4,8 +4,8 @@ import { HexString } from '@gear-js/api'
 import { notFound } from 'next/navigation'
 
 async function getData(id: string) {
-	const query = `{
-        coinById(id: "${id}") {
+	const query = `query TokenById($id: String!) {
+        coinById(id: $id) {
 			admins
 			decimals
 			id
@@ -19,7 +19,7 @@ async function getData(id: string) {
 	const options = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ query: query }),
+		body: JSON.stringify({ query, variables: { id } }),
 	}
 
 	try {
@@ -48,11 +48,11 @@ type ITokenResponse = {
 	}
 }
 
-export default async function Page({
-	params: { id },
-}: {
-	params: { id: string }
-}) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+	const params = await props.params
+
+	const { id } = params
+
 	const data = (await getData(id)) as ITokenResponse
 
 	if (!data || !data.data.coinById) return notFound()

@@ -2,7 +2,13 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
+import { getSafeImageSrc } from '@/lib/sanitize'
 import { Sprite } from '@/components/ui/sprite'
 import {
 	DropdownMenu,
@@ -30,12 +36,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<div className="relative flex flex-col items-center justify-center">
 				<Image
-					src={info?.row?.original?.image}
+					src={getSafeImageSrc(info?.row?.original?.image)}
 					alt={info?.row?.original?.name}
 					width={60}
 					height={60}
+					unoptimized={true}
 					className="size-15 rounded-full object-cover"
-					// unoptimized={true}
 					onError={(e) => {
 						const target = e.target as HTMLImageElement
 						target.onerror = null // prevents looping
@@ -43,7 +49,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 					}}
 				/>
 				{info?.row?.original?.isAdmin && (
-					<p className="-m-2 w-max rounded-sm bg-white p-1 font-ps2p text-[8px] uppercase text-black">
+					<p className="font-ps2p -m-2 w-max rounded-sm bg-white p-1 text-[8px] text-black uppercase">
 						Creator
 					</p>
 				)}
@@ -116,7 +122,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-center">Circ. Supply</div>
+			<div className="group flex items-center justify-center">Total Supply</div>
 		),
 		enableSorting: false,
 	},
@@ -125,10 +131,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'distributed',
 		cell: (info) => (
 			<div className="text-right">
-				{(
-					(BigInt(info.row.original.distributed) * BigInt(100)) /
-					BigInt(info.row.original.maxSupply)
-				).toString()}
+				{formatDistributedPercentage(
+					info.row.original.distributed,
+					info.row.original.maxSupply
+				)}
 				%
 			</div>
 		),
@@ -232,7 +238,7 @@ function Buttons(
 				<DropdownMenuContent
 					align="end"
 					side="bottom"
-					className="min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+					className="font-poppins min-w-35 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
 					<DropdownMenuItem
 						onClick={(e: { stopPropagation: () => void }) => {

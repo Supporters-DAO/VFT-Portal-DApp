@@ -13,10 +13,10 @@ export function Hero() {
 				</div>
 				<div className="relative z-1 mt-19 text-center md:mt-32 lg:my-auto lg:pb-6 lg:text-left">
 					<h1 className="text-[32px]/[44px] text-[#FDFDFD] drop-shadow-[0_6px_0_#242424] md:text-[64px]/[80px]">
-						Vara <br /> Meme&shy;coins
+						Launch Your <br /> Token on Vara
 					</h1>
 					<p className="mt-5 font-silkscreen text-[16px]/[1.25] text-[#FDFDFD] drop-shadow-[0_2px_0_#242424] sm:mt-6 md:text-[24px]/[1.4]">
-						Create your own memecoin in&nbsp;#&nbsp;minutes
+						Create any fungible token in minutes - no code, no limits.
 					</p>
 					<CreateButtonLazy />
 				</div>

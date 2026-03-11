@@ -2,7 +2,6 @@ import { ICoinEventHandler } from "./coin/coin.handler";
 import { EventInfo } from "./event-info.type";
 import { EntitiesService } from "./entities.service";
 import { IStorage } from "./storage/storage.inteface";
-import { HexString, ProgramMetadata } from "@gear-js/api";
 import {
   FactoryEvent,
   FactoryEventType,
@@ -21,14 +20,12 @@ import { TransferredHandler } from "./coin/transferred.handler";
 import { TransferredToUsersHandler } from "./coin/transferred-to-users.handler";
 import { BurnedHandler } from "./coin/burned.handler";
 import { MintedHandler } from "./coin/minted.handler";
-import { MemeRemovedHandler } from "./factory/meme-removed.handler";
+import { HexString } from "../types";
 
-const factoryEventsToHandler: Record<
-  FactoryEventType,
-  IFactoryEventHandler | undefined
+const factoryEventsToHandler: Partial<
+  Record<FactoryEventType, IFactoryEventHandler>
 > = {
   [FactoryEventType.MemeCreated]: new MemeCreatedHandler(),
-  [FactoryEventType.MemeRemoved]: new MemeRemovedHandler(),
 };
 
 const coinEventsToHandler: Record<
@@ -44,19 +41,11 @@ const coinEventsToHandler: Record<
 };
 
 export class EventsProcessing {
-  private readonly factoryMeta: ProgramMetadata;
-  private readonly coinMeta: ProgramMetadata;
-
   constructor(
     private readonly entitiesService: EntitiesService,
-    private readonly storage: IStorage,
     private readonly memeFactoryParser: MemeFactoryEventsParser,
     private readonly coinParser: CoinEventsParser
-  ) {
-    const factory = this.storage.getFactory();
-    this.factoryMeta = ProgramMetadata.from(factory.meta);
-    this.coinMeta = ProgramMetadata.from(factory.coinMeta);
-  }
+  ) {}
 
   saveAll() {
     return this.entitiesService.saveAll();

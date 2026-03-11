@@ -15,9 +15,9 @@ type Props = {
 export function HomepageFAQ({ className }: Props) {
 	return (
 		<section
-			className={cn('container pb-12.5 pt-25 sm:py-18 lg:py-25', className)}
+			className={cn('container pt-25 pb-12.5 sm:py-18 lg:py-25', className)}
 		>
-			<h2 className="text-center text-[32px] leading-none text-primary">FAQ</h2>
+			<h2 className="text-primary text-center text-[32px] leading-none">FAQ</h2>
 			<Accordion
 				className="mx-auto mt-8 grid max-w-[920px] gap-y-4 sm:gap-y-8 lg:gap-y-5"
 				type="multiple"
@@ -34,11 +34,11 @@ export function HomepageFAQ({ className }: Props) {
 							<span className="shrink-0 grow-0">
 								<Sprite
 									name="accordion-minus"
-									className="hidden size-8 group-radix-state-open:block sm:size-10"
+									className="group-radix-state-open:block hidden size-8 sm:size-10"
 								/>
 								<Sprite
 									name="accordion-plus"
-									className="size-8 group-radix-state-open:hidden sm:size-10"
+									className="group-radix-state-open:hidden size-8 sm:size-10"
 								/>
 							</span>
 						</AccordionTrigger>
@@ -60,162 +60,195 @@ export function HomepageFAQ({ className }: Props) {
 
 const QA = [
 	{
-		question: 'What is a Tokenator Memecoin Portal?',
+		question: 'What is Tokenator?',
 		answer: (
 			<>
 				<p>
-					This is an online platform that enables individuals to create their
-					own memecoins easily. Users can set up various parameters for their
-					coin, such as the total and initial token supply, coin name,
-					description, symbol, and more, without needing to write any code.
+					Tokenator is a no-code token launcher on Vara Network. Deploy a
+					standard VFT (Vara Fungible Token) smart contract in minutes -
+					memecoins, utility tokens, DAO governance tokens, reward points, or
+					anything else. You set the name, supply, symbol, and logo. The
+					contract is deployed automatically, and full ownership belongs to you.
+					The platform has zero admin access to your token.
 				</p>
 			</>
 		),
 	},
 	{
-		question: 'How do I create my own memecoin?',
+		question: 'How do I create my own token?',
 		answer: (
 			<>
 				<p>
-					To create your memecoin, first, connect your{' '}
+					Connect your{' '}
 					<Link
-						href="https://wiki.vara.network/docs/account/create-account"
+						href="https://wiki.vara.network/docs/account"
 						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
 					>
 						Vara account
 					</Link>
-					. Then, click the &quot;Create now&quot; button to open the creation
-					dialog. Specify your memecoin&apos;s name, description, symbol, supply
-					details, and additional settings. This includes tokenomics, social
-					media links, and more.
+					, then click &quot;Create token.&quot; Fill in the name, description,
+					symbol, supply, and any additional settings - social links,
+					tokenomics, logo. Hit deploy, and your VFT smart contract goes live on
+					Vara Network automatically. No code required.
 				</p>
 			</>
 		),
 	},
 	{
-		question: 'Can I mint more coins after the initial creation?',
+		question: 'Can I mint more tokens after launch?',
 		answer: (
 			<>
 				<p>
-					Yes, the creator can mint more coins post-launch if the initial token
-					supply is less than the total token supply. It&apos;s crucial to
-					finalize your coin&apos;s monetary policy before launch, as any
-					changes can impact the trust in your coin.
+					Yes - if the initial supply is below your set maximum, you can mint
+					additional tokens at any time as the owner. That said, it&apos;s worth
+					finalizing your token&apos;s supply policy before launch: predictable
+					issuance builds trust with your holders.
 				</p>
 			</>
 		),
 	},
 	{
-		question: 'How do I distribute my memecoin to users?',
+		question: 'How do I distribute my token?',
 		answer: (
 			<>
 				<p>
-					After creation, you can directly distribute your memecoin to other
-					users through the portal via transfers. Define your distribution
-					strategy — it can be airdrops, rewards for early supporters, sales, or
-					anything else. Your coins = your rules.
+					Once deployed, transfer tokens directly to any Vara address via the
+					portal. Your distribution strategy is entirely up to you - airdrops,
+					community rewards, vesting schedules, public sales, or anything else.
+					Your token, your rules.
 				</p>
 			</>
 		),
 	},
 	{
-		question:
-			'Is it possible to list my memecoin on Decentralized Exchanges (DEXes)?',
+		question: 'Can I list my token on a DEX?',
 		answer: (
 			<>
 				<p>
-					While the creation portal itself doesn&apos;t handle listings, it
-					provides you with the necessary information to list your coin on
-					DEXes. The listing process will depend on the requirements of the
-					exchange you choose.
-				</p>
-			</>
-		),
-	},
-	{
-		question:
-			"What should I consider when setting up my memecoin's initial supply?",
-		answer: (
-			<>
-				<p>
-					Consider your goals for the coin, its use case, and how you want it to
-					be distributed among early adopters, developers, and the community. A
-					large supply can dilute value, but too small a supply might limit
-					participation. Research other successful memecoins for guidance.
-				</p>
-			</>
-		),
-	},
-	{
-		question: 'How can I ensure my memecoin is secure?',
-		answer: (
-			<>
-				<p>
-					While the portal ensures the technical creation process is secure, the
-					broader security of your coin involves regular audits, transparent
-					communication, and secure distribution practices. Consider hiring a
-					security firm to audit your coin if you plan to build significant
-					value around it.
-				</p>
-			</>
-		),
-	},
-	{
-		question: 'Can I create a memecoin without any programming knowledge?',
-		answer: (
-			<>
-				<p>
-					Yes, that&apos;s the primary advantage of a memecoin creation portal.
-					It abstracts away the complexity of smart contracts and blockchain
-					technology, allowing anyone with an idea to create a token.
-				</p>
-			</>
-		),
-	},
-	{
-		question:
-			'What are the costs associated with creating and maintaining a memecoin?',
-		answer: (
-			<>
-				<p>
-					Creating a memecoin on the portal is free of charge, allowing anyone
-					to create their own memecoin without extra costs! However, a small
-					amount of VARA is required in your balance to cover the network
-					transaction fees associated with memecoin creation, minting, and
-					transferring.
-				</p>
-				<p>
-					<span className="">!</span> Please note that the{' '}
+					Yes. The easiest way is to list directly on{' '}
 					<Link
-						href="https://wiki.polkadot.network/docs/build-protocol-info#existential-deposit"
+						href="https://app.rivrdex.io"
 						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Mainnet]
+					</Link>{' '}
+					(coming soon) or{' '}
+					<Link
+						href="https://stg-app.rivrdex.io"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Testnet]
+					</Link>{' '}
+					- the native decentralized exchange on Vara Network. After deploying
+					your token, head to RivrDEX, create a liquidity pool, and your token
+					is tradeable. Anyone can add liquidity and start trading
+					permissionlessly.
+				</p>
+			</>
+		),
+	},
+	{
+		question:
+			"What should I consider when setting up my token's initial supply?",
+		answer: (
+			<>
+				<p>
+					Think about your token&apos;s purpose and who should hold it - early
+					users, the community, a treasury, a team. Large supplies suit
+					high-volume use cases (points, rewards); smaller supplies work better
+					for governance or scarce assets. Look at similar projects for
+					reference, and define your distribution plan before launch.
+				</p>
+			</>
+		),
+	},
+	{
+		question: 'How can I ensure my token is secure?',
+		answer: (
+			<>
+				<p>
+					Your token contract is deployed using the audited VFT standard on Vara
+					Network, and the platform holds no admin keys. For broader security:
+					communicate transparently with your community, use secure distribution
+					practices, and - if you plan to build significant value around the
+					token - consider a third-party audit.
+				</p>
+			</>
+		),
+	},
+	{
+		question: 'Do I need coding skills to launch a token?',
+		answer: (
+			<>
+				<p>
+					Not at all. Tokenator handles smart contract deployment automatically
+					- no Solidity, no Rust, no CLI. If you can fill in a form, you can
+					launch a token on Vara Network.
+				</p>
+			</>
+		),
+	},
+	{
+		question: 'What does it cost to create a token?',
+		answer: (
+			<>
+				<p>
+					Launching a token is free. You only need a small amount of VARA in
+					your wallet to cover network gas fees for deployment, minting, and
+					transfers.
+				</p>
+				<p>
+					Note: the{' '}
+					<Link
+						href="https://docs.polkadot.com/reference/glossary/#existential-deposit"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
 					>
 						Existential Deposit
 					</Link>{' '}
-					on the Vara network is 10 VARA. Therefore, your account must have at
-					least 11 VARA (and never less than 1 VARA) to ensure you can pay the
-					gas fees while maintaining your network presence.
+					on the Vara Network is 1 VARA, so keep at least 2 VARA in your account
+					to stay active and cover transactions.
 				</p>
 			</>
 		),
 	},
 	{
-		question: 'How do I promote my memecoin?',
+		question: 'How do I get people to use my token?',
 		answer: (
 			<>
 				<p>
-					Promotion is key to gaining users and value. Utilize social media,
-					cryptocurrency forums, and other online communities. Consider
-					partnerships, giveaways, or utility development that can increase
-					interest and usage of your memecoin.
+					Start by giving your token real utility or a compelling story. Share
+					it on X, crypto forums, and community chats. List it on{' '}
+					<Link
+						href="https://app.rivrdex.io"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Mainnet]
+					</Link>{' '}
+					(coming soon) or{' '}
+					<Link
+						href="https://stg-app.rivrdex.io"
+						className="link link-primary"
+						target="_blank"
+						rel="noreferrer"
+					>
+						RivrDEX [Testnet]
+					</Link>{' '}
+					so anyone can trade it instantly. Airdrops, early-holder rewards, and
+					partnerships are great ways to grow an initial community.
 				</p>
 				<p>
-					Creating a memecoin offers a unique way to engage with the crypto
-					community, experiment with decentralized finance, or even just have a
-					bit of fun. However, as with any project in the cryptocurrency space,
-					it&apos;s important to proceed with a clear strategy, awareness of the
-					risks, and consideration for the legal and ethical implications of
-					your actions.
+					Whatever your token is for - a meme, a project, a DAO - a clear
+					purpose makes it spread.
 				</p>
 			</>
 		),

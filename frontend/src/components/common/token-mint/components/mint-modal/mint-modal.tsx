@@ -9,8 +9,8 @@ import styles from './mint-modal.module.scss'
 import { Input } from '@/components/ui/input'
 import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useAuth } from '@/lib/hooks/use-auth'
-import action from '@/app/actions'
 import { formatUnits, parseUnits } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 type Props = {
 	onClose: () => void
@@ -28,6 +28,7 @@ export const MintModal = ({
 	decimals,
 }: Props) => {
 	const { walletAccount } = useAuth()
+	const router = useRouter()
 	const [isPending, setIsPending] = useState(false)
 	const [inputAmount, setInputAmount] = useState('')
 	const sendMessage = useMessages()
@@ -52,7 +53,7 @@ export const MintModal = ({
 
 		if (!sendMessageResult) return
 
-		action('token')
+		router.refresh()
 		onClose()
 	}
 

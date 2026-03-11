@@ -49,12 +49,15 @@ export const useFetchMyCoins = (limit = 20, offset = 0, searchQuery = '') => {
 	const [tokenData, setTokenData] = useState<Token[]>([])
 	const { walletAccount } = useAuth()
 
-	const whereClause = searchQuery.trim()
-		? `, where: { name_containsInsensitive: "${searchQuery.trim()}" }`
+	const normalizedSearchQuery = searchQuery.trim()
+	const hasSearchQuery = normalizedSearchQuery.length > 0
+	const searchDefinition = hasSearchQuery ? ', $search: String!' : ''
+	const whereClause = hasSearchQuery
+		? ', where: { name_containsInsensitive: $search }'
 		: ''
 
-	const query = `{
-    coins(limit: ${limit}, offset: ${offset}, orderBy: id_ASC${whereClause}) {
+	const query = `query FetchMyCoins($limit: Int!, $offset: Int!${searchDefinition}) {
+    coins(limit: $limit, offset: $offset, orderBy: id_ASC${whereClause}) {
       balances {
         balance
         address
@@ -80,6 +83,9 @@ export const useFetchMyCoins = (limit = 20, offset = 0, searchQuery = '') => {
       totalCount
     }
   }`
+	const variables = hasSearchQuery
+		? { limit, offset, search: normalizedSearchQuery }
+		: { limit, offset }
 
 	const options = {
 		method: 'POST',
@@ -87,7 +93,8 @@ export const useFetchMyCoins = (limit = 20, offset = 0, searchQuery = '') => {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			query: query,
+			query,
+			variables,
 		}),
 	}
 

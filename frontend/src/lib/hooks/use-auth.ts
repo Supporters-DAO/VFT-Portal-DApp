@@ -9,17 +9,14 @@ export const isLoadingAtomWallet = atom<boolean>(true)
 export const useAuth = () => {
 	const [walletAccount, setWalletAccount] = useAtom(walletAccountAtom)
 	const [isAccountReadyAtom, setsAccountReadyAtom] = useAtom(accountReadyAtom)
-	const [isAdmin, setIsAdmin] = useAtom(accountReadyAtom)
 	const [isLoadingWallet, setIsLoadingWallet] = useAtom(isLoadingAtomWallet)
 
 	return {
 		walletAccount,
 		isAccountReadyAtom,
-		isAdmin,
 		isLoadingWallet,
 		setWalletAccount,
 		setsAccountReadyAtom,
-		setIsAdmin,
 		setIsLoadingWallet,
 	}
 }

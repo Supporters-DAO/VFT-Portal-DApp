@@ -2,7 +2,13 @@ import { ColumnDef } from '@tanstack/react-table'
 import { type AlertContainerFactory, useAlert } from '@gear-js/react-hooks'
 import Image from 'next/image'
 
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
+import { getSafeImageSrc } from '@/lib/sanitize'
 import { Sprite } from '@/components/ui/sprite'
 import { Token } from '@/lib/hooks/use-fetch-coins'
 
@@ -20,11 +26,12 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		cell: (info) => (
 			<>
 				<Image
-					src={info?.row?.original?.image}
+					src={getSafeImageSrc(info?.row?.original?.image)}
 					key={info?.row?.original?.id}
 					alt={''}
 					width={60}
 					height={60}
+					unoptimized={true}
 					className="size-15 rounded-full object-cover"
 					onError={(e) => {
 						const target = e.target as HTMLImageElement
@@ -101,7 +108,7 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 			</div>
 		),
 		header: () => (
-			<div className="group flex items-center justify-center">Circ. Supply</div>
+			<div className="group flex items-center justify-center">Total Supply</div>
 		),
 		enableSorting: false,
 	},
@@ -110,10 +117,10 @@ export const coinsTypesTableColumns: ColumnDef<Token>[] = [
 		id: 'distributed',
 		cell: (info) => (
 			<div className="text-right">
-				{(
-					(BigInt(info.row.original.distributed) * BigInt(100)) /
-					BigInt(info.row.original.maxSupply)
-				).toString()}
+				{formatDistributedPercentage(
+					info.row.original.distributed,
+					info.row.original.maxSupply
+				)}
 				%
 			</div>
 		),

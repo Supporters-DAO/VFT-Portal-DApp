@@ -81,14 +81,14 @@ export const CreateForm = () => {
 		<div className="ju my-10 flex items-start max-sm:flex-col">
 			<BackButton />
 			<div className="flex flex-col items-center gap-3 max-sm:w-full">
-				<h1 className="text-[28px] text-primary max-sm:text-center max-sm:text-[16px]">
-					Memecoin Creator
+				<h1 className="text-primary text-[28px] max-sm:text-center max-sm:text-[16px]">
+					Create Token
 				</h1>
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-3 max-sm:w-full max-sm:rounded-[20px]">
+				<div className="bg-blue-light flex w-[660px] flex-col gap-6 rounded-[40px] p-3 max-sm:w-full max-sm:rounded-[20px]">
 					<div className="mx-auto w-2/5 max-sm:mt-5 max-sm:w-[70%]">
 						<ol className="flex w-full items-center">
 							<li className="flex w-full items-center text-[#0F1B34] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#D0D3D9] after:content-['']">
-								<span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary max-sm:size-7 max-sm:text-[12px]">
+								<span className="bg-primary flex size-10 shrink-0 items-center justify-center rounded-full max-sm:size-7 max-sm:text-[12px]">
 									1
 								</span>
 							</li>
@@ -104,9 +104,9 @@ export const CreateForm = () => {
 							</li>
 						</ol>
 					</div>
-					<h3 className="text-center uppercase">Memecoin Details</h3>
+					<h3 className="text-center uppercase">Token Details</h3>
 					<form
-						className="flex flex-col gap-5 font-poppins"
+						className="font-poppins flex flex-col gap-5"
 						onSubmit={handleSubmit(onSubmit)}
 					>
 						<div className="flex flex-col gap-2">
@@ -116,7 +116,7 @@ export const CreateForm = () => {
 								render={({ field, fieldState: { error } }) => (
 									<Input
 										{...field}
-										label="Memecoin’s Name"
+										label="Token Name"
 										placeholder="My Vara Coin"
 										error={error?.message}
 									/>
@@ -175,13 +175,7 @@ export const CreateForm = () => {
 								type="file"
 								accept="image/*"
 								onChange={(e) => handleFileChange(e)}
-								className="block w-full text-sm text-gray-500
-									file:mr-4 file:rounded-full file:border-0
-									file:bg-blue-50 file:px-4
-									file:py-2 file:text-sm
-									file:font-semibold file:text-blue-700
-									hover:file:bg-blue-100
-								"
+								className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
 							/>
 							{errors.image && (
 								<p className="mt-1 text-xs text-red-500">
@@ -199,7 +193,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Initial Supply"
-											placeholder="Initial number of your memecoins"
+											placeholder="Initial number of your tokens"
 											type="number"
 											onChange={(e) => {
 												const value = e.target.value
@@ -223,7 +217,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Max Supply"
-											placeholder="Total number of your memecoins"
+											placeholder="Total number of your tokens"
 											error={
 												touchedFields.max_supply || errors.max_supply
 													? errors.max_supply?.message || error?.message
@@ -264,7 +258,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Telegram (optional)"
-											placeholder="Add a link to Telegram"
+											placeholder="Add @username or link"
 											error={error?.message}
 										/>
 									)}
@@ -281,7 +275,7 @@ export const CreateForm = () => {
 										<Input
 											{...field}
 											label="Twitter (optional)"
-											placeholder="Add a link to Twitter"
+											placeholder="Add @username or link"
 											error={error?.message}
 										/>
 									)}
@@ -329,7 +323,7 @@ export const CreateForm = () => {
 										<InputArea
 											{...field}
 											label="Description"
-											placeholder="Tell people more about your memecoin"
+											placeholder="Tell people more about your token"
 											error={error?.message}
 										/>
 										<span
@@ -348,7 +342,7 @@ export const CreateForm = () => {
 
 						<button
 							type="submit"
-							className="mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 font-ps2p text-black hover:bg-primary max-sm:mb-5 max-sm:w-full max-sm:px-0"
+							className="font-ps2p hover:bg-primary mx-auto rounded-lg bg-[#D0D3D9] px-35 py-3 text-black max-sm:mb-5 max-sm:w-full max-sm:px-0"
 						>
 							Next
 						</button>

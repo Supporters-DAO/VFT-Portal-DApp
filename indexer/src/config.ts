@@ -10,6 +10,7 @@ export const checkEnv = (envName: string, defaultValue?: string) => {
 };
 
 export const config = {
+  rpcEndpoint: checkEnv("RPC_ENDPOINT"),
   factoryProgram: checkEnv("FACTORY_PROGRAM"),
   rateLimit: Number.parseInt(checkEnv("RATE_LIMIT", "100")),
   minBlockNum: Number.parseInt(checkEnv("MIN_BLOCK_NUMBER", "0")),

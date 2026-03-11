@@ -94,7 +94,7 @@ export function AboutCreateSlider() {
 				}}
 				className="overflow-hidden"
 			>
-				<div className="whitespace-nowrap px-4 py-2 text-[12px] leading-7 sm:py-0 sm:text-[16px]">
+				<div className="px-4 py-2 text-[12px] leading-7 whitespace-nowrap sm:py-0 sm:text-[16px]">
 					<CarouselContent
 						classNameWrapper="overflow-visible"
 						className="-ml-8 touch-pan-y md:ml-0 xl:justify-center"
@@ -164,7 +164,7 @@ export function AboutCreateSlider() {
 										/>
 									</picture>
 								</div>
-								<div className="absolute bottom-0 left-[calc(var(--offset)+1rem)] right-4 max-w-[400px] rounded-lg bg-primary p-5 sm:left-[calc(var(--offset)/2)] sm:right-0">
+								<div className="bg-primary absolute right-4 bottom-0 left-[calc(var(--offset)+1rem)] max-w-[400px] rounded-lg p-5 sm:right-0 sm:left-[calc(var(--offset)/2)]">
 									<p className="font-silkscreen text-[15px] leading-[1.4] text-[#242424] sm:text-[18px]">
 										{quote}
 									</p>
@@ -178,27 +178,22 @@ export function AboutCreateSlider() {
 	)
 }
 
-const dataBullets = [
-	'Create a name',
-	'Set symbol & decimals',
-	'Add an image link',
-]
+const dataBullets = ['Give it a name', 'Set symbol & decimals', 'Add a logo']
 
 const dataImages: [StaticImageData[], ReactNode][] = [
 	[
 		[Slide1, Slide1x2, Slide1Webp, Slide1x2Webp],
-		'Dream up a catchy moniker, as viral as your currency! Craft it to resonate, embedding in the human psyche like the ultimate viral strain.',
+		"Pick a name that fits your vision - whether it's a community meme, a project brand, or a DAO governance token. Something people will remember.",
 	],
 	[
 		[Slide2, Slide2x2, Slide2Webp, Slide2x2Webp],
-		'Pick a symbol that screams "cool" and decide on decimals like a pro. This is where the magic happens – so choose wisely!',
+		'Set your ticker symbol, initial supply, and decimal precision. These parameters are baked into your smart contract - choose what works for your use case.',
 	],
 	[
 		[Slide3, Slide3x2, Slide3Webp, Slide3x2Webp],
 		<>
-			Find an image that&apos;s as iconic as your memecoin. Whether it&apos;s
-			a&nbsp;laughing emoji or a wacky doodle, make it stand out in
-			the&nbsp;crowd!
+			Upload a logo that represents your token. A clear, recognizable icon makes
+			your token easy to spot on wallets and DEX listings.
 		</>,
 	],
 ]

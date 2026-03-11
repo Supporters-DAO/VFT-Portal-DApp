@@ -9,6 +9,7 @@ import Link from 'next/link'
 
 import { ChevronDown } from 'lucide-react'
 import { Sprite } from '@/components/ui/sprite'
+import { getSafeImageSrc } from '@/lib/sanitize'
 
 import {
 	Accordion,
@@ -17,7 +18,12 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
-import { copyToClipboard, formatUnits, prettyWord } from '@/lib/utils'
+import {
+	copyToClipboard,
+	formatDistributedPercentage,
+	formatUnits,
+	prettyWord,
+} from '@/lib/utils'
 
 import * as Separator from '@radix-ui/react-separator'
 import {
@@ -54,7 +60,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 font-poppins">
+		<div className="font-poppins flex flex-col gap-4">
 			{data.length > 0 ? (
 				data.map((i: Token) => {
 					const balance = balances.find((b) => b.coin.id === i.id)?.balance
@@ -74,17 +80,18 @@ export function MobileList({ data }: ContentLayoutProps) {
 							<AccordionItem
 								key={i.name}
 								value={`item-${i}`}
-								className="z-0 rounded-lg bg-[#1D2C4B] radix-state-open:ring-brand"
+								className="radix-state-open:ring-brand z-0 rounded-lg bg-[#1D2C4B]"
 							>
 								<AccordionTrigger noIcon className="p-4 md:px-8">
-									<div className="flex gap-3 ">
+									<div className="flex gap-3">
 										<div className="flex flex-col items-center">
 											<Image
-												src={i.image}
+												src={getSafeImageSrc(i.image)}
 												key={i.id}
 												alt={''}
 												width={60}
 												height={60}
+												unoptimized={true}
 												className="size-10 rounded-full object-cover"
 												onError={(e) => {
 													const target = e.target as HTMLImageElement
@@ -93,7 +100,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 												}}
 											/>
 											{isAdmin && (
-												<p className="-m-2 w-max rounded-sm bg-white p-1 font-ps2p text-[5px] uppercase text-black">
+												<p className="font-ps2p -m-2 w-max rounded-sm bg-white p-1 text-[5px] text-black uppercase">
 													Creator
 												</p>
 											)}
@@ -116,14 +123,14 @@ export function MobileList({ data }: ContentLayoutProps) {
 												decimals={i.decimals}
 											/>
 										)}
-										<span className="flex size-7.5 shrink-0 transform-gpu self-start rounded-full px-1.5 pb-[5px] pt-[7px] transition-transform duration-300 group-radix-state-open:rotate-180">
+										<span className="group-radix-state-open:rotate-180 flex size-7.5 shrink-0 transform-gpu self-start rounded-full px-1.5 pt-[7px] pb-[5px] transition-transform duration-300">
 											<ChevronDown className="size-4.5" />
 										</span>
 									</div>
 								</AccordionTrigger>
 								<AccordionContent className="px-4 pb-5 text-base text-[#535352]">
 									<div className="-mt-3">
-										<Separator.Root className=" my-[15px] bg-[#FDFDFD]/[4%] data-[orientation=horizontal]:h-px data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-px" />
+										<Separator.Root className="my-[15px] bg-[#FDFDFD]/[4%] data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
 									</div>
 									<div className="flex flex-col gap-2">
 										<div className="flex justify-between">
@@ -141,7 +148,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 											</span>
 										</div>
 										<div className="flex justify-between">
-											<span className="text-[#FDFDFD]/[80%]">Circ. Supply</span>
+											<span className="text-[#FDFDFD]/[80%]">Total Supply</span>
 											<span className="text-[#FDFDFD]">
 												{format(i.circulatingSupply)}
 											</span>
@@ -149,10 +156,10 @@ export function MobileList({ data }: ContentLayoutProps) {
 										<div className="flex justify-between">
 											<span className="text-[#FDFDFD]/[80%]">Distributed</span>
 											<span className="text-[#FDFDFD]">
-												{(
-													(BigInt(i.distributed) * BigInt(100)) /
-													BigInt(i.maxSupply)
-												).toString()}
+												{formatDistributedPercentage(
+													i.distributed,
+													i.maxSupply
+												)}
 												%
 											</span>
 										</div>
@@ -178,7 +185,7 @@ export function MobileList({ data }: ContentLayoutProps) {
 										</div>
 									</div>
 									<Link href={`/tokens/${i.id}/`}>
-										<button className="mt-3 w-full rounded-lg bg-primary py-2 font-ps2p text-[11px] text-[#242424]">
+										<button className="bg-primary font-ps2p mt-3 w-full rounded-lg py-2 text-[11px] text-[#242424]">
 											Coin Page
 										</button>
 									</Link>
@@ -189,10 +196,10 @@ export function MobileList({ data }: ContentLayoutProps) {
 				})
 			) : (
 				<div className="flex flex-col gap-2 rounded-md bg-[#1D2C4B] px-3 py-5 text-center text-[20px]">
-					<h3 className="font-silkscreen">No traces of memecoin</h3>
+					<h3 className="font-silkscreen">No matching tokens</h3>
 					<p className="text-[16px] text-white/[80%]">
-						Either it`s hiding like a pro or it`s just too cool for our search
-						bar
+						Nothing matched your search yet. Try a different token name, symbol,
+						or address.
 					</p>
 				</div>
 			)}
@@ -224,7 +231,7 @@ function Buttons({ id, availableMint, decimals }: ButtonsProps) {
 				<DropdownMenuContent
 					align="end"
 					side="top"
-					className="bg-red-5 flex min-w-35 flex-col gap-3 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] p-4 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+					className="bg-red-5 font-poppins flex min-w-35 flex-col gap-3 rounded-lg border-2 border-[#2E3B55] bg-[#1D2C4B] p-4 text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
 					<DropdownMenuItem
 						onClick={(e: { stopPropagation: () => void }) => {

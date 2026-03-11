@@ -75,7 +75,7 @@ export const AllCoins = () => {
 		<div className="ju my-10 flex flex-col gap-8">
 			<BackButton />
 			<DataTable
-				nameTable="All Memecoins"
+				nameTable="All Tokens"
 				table={table}
 				onRowClick={handleRowClick}
 				setGlobalFilter={setGlobalFilter}

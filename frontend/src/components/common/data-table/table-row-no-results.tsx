@@ -16,10 +16,10 @@ export function TableRowNoResults<TData>({
 				className="h-24 text-center align-middle"
 			>
 				<div className="my-20 flex flex-col gap-5">
-					<h1 className="font-silkscreen text-[28px]">No traces of memecoin</h1>
+					<h1 className="font-silkscreen text-[28px]">No matching tokens</h1>
 					<p className="text-[18px] text-white/[80%]">
-						Either it`s hiding like a pro or it`s just too cool for our search
-						bar
+						Nothing matched your search yet. Try a different token name, symbol,
+						or address.
 					</p>
 				</div>
 			</TableCell2>

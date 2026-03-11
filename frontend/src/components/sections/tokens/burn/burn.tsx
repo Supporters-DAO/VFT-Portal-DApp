@@ -10,7 +10,6 @@ import { useMessages } from '@/lib/sails/use-send-message-ft'
 import { useFetchBalances } from '@/lib/hooks/use-fetch-balances'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { Hero404 } from '../../404/hero'
-import action from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import { TooltipContainer } from '@/components/ui/tooltip'
 import { Sprite } from '@/components/ui/sprite'
@@ -65,8 +64,6 @@ export const BurnCoin = ({ token }: Props) => {
 
 		if (!sendMessageResult) return
 
-		action('token')
-		action('balance')
 		router.push(`/tokens/${token.id}`)
 	}
 
@@ -82,16 +79,16 @@ export const BurnCoin = ({ token }: Props) => {
 			<BackButton />
 			<div className="flex flex-col items-center gap-3 max-sm:w-full">
 				<div className="flex items-center justify-between">
-					<h1 className="text-[28px] text-primary max-sm:text-[16px]">Burn</h1>
+					<h1 className="text-primary text-[28px] max-sm:text-[16px]">Burn</h1>
 				</div>
 
-				<div className="flex w-[660px] flex-col gap-6 rounded-[40px] bg-blue-light p-10 max-sm:w-full max-sm:rounded-[20px] max-sm:px-4 max-sm:py-10">
+				<div className="bg-blue-light flex w-[660px] flex-col gap-6 rounded-[40px] p-10 max-sm:w-full max-sm:rounded-[20px] max-sm:px-4 max-sm:py-10">
 					<h3 className="text-center uppercase">{token.name}</h3>
-					<p className="text-center font-poppins text-[16px] font-medium text-primary">
+					<p className="font-poppins text-primary text-center text-[16px] font-medium">
 						{formattedBalance} {token.symbol}
 					</p>
 
-					<div className="flex flex-col gap-3 font-poppins">
+					<div className="font-poppins flex flex-col gap-3">
 						<div className="">
 							<div className="flex items-center gap-1">
 								Amount
@@ -104,6 +101,7 @@ export const BurnCoin = ({ token }: Props) => {
 											/>
 										</>
 									}
+									delay={0}
 								>
 									<p className="max-w-60 text-center">
 										Сan`t be greater than total supply
@@ -133,14 +131,14 @@ export const BurnCoin = ({ token }: Props) => {
 						</div>
 					</div>
 					<button
-						className="btn mx-25 py-4 disabled:bg-[#D0D3D9] max-sm:mx-0  max-sm:w-full"
+						className="btn mx-25 py-4 disabled:bg-[#D0D3D9] max-sm:mx-0 max-sm:w-full"
 						disabled={!!disableBurnButton}
 						onClick={onSendCoins}
 					>
 						{isPending ? (
 							<span className="mx-auto flex w-1/2">
 								Pending
-								<span className="w-full after:flex after:animate-dots after:content-['']"></span>
+								<span className="after:animate-dots w-full after:flex after:content-['']"></span>
 							</span>
 						) : (
 							'Burn'

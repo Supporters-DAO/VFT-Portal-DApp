@@ -49,7 +49,7 @@ export function CreateButton({
 			{isWallet ? (
 				<div className="mt-10 md:mt-12">
 					<Link href={'/tokens/create'} className="btn btn--primary">
-						Create now
+						Create token
 					</Link>
 				</div>
 			) : (

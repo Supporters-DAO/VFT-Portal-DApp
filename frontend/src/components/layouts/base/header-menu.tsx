@@ -9,7 +9,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -37,7 +36,7 @@ export function HeaderMenu({ className }: Props) {
 				<DropdownMenuContent
 					align="end"
 					side="bottom"
-					className="min-w-55 font-poppins text-[14px] leading-none tracking-[0.03em] md:mt-2"
+					className="font-poppins min-w-55 text-[14px] leading-none tracking-[0.03em] md:mt-2"
 				>
 					{walletAccount && (
 						<>
@@ -45,7 +44,7 @@ export function HeaderMenu({ className }: Props) {
 								asChild
 								className={cn(pathname === '/tokens/create' && 'text-primary')}
 							>
-								<Link href="/tokens/create">Memecoins Creator</Link>
+								<Link href="/tokens/create">Create Token</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 
@@ -53,7 +52,7 @@ export function HeaderMenu({ className }: Props) {
 								asChild
 								className={cn(pathname === '/tokens/my' && 'text-primary')}
 							>
-								<Link href="/tokens/my">My Coins – My Rules</Link>
+								<Link href="/tokens/my">My Tokens</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 						</>
@@ -62,7 +61,31 @@ export function HeaderMenu({ className }: Props) {
 						asChild
 						className={cn(pathname === '/tokens' && 'text-primary')}
 					>
-						<Link href="/tokens">All Memecoins</Link>
+						<Link href="/tokens">All Tokens</Link>
+					</DropdownMenuItem>
+
+					<DropdownMenuSeparator />
+
+					<DropdownMenuItem asChild>
+						<Link
+							href="https://app.rivrdex.io"
+							target="_blank"
+							rel="noreferrer"
+							className="flex-col items-start gap-2"
+						>
+							<span>List on RivrDEX [Mainnet]</span>
+							<span className="text-[10px]">(coming soon)</span>
+						</Link>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem asChild>
+						<Link
+							href="https://stg-app.rivrdex.io/"
+							target="_blank"
+							rel="noreferrer"
+						>
+							List on RivrDEX [Testnet]
+						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

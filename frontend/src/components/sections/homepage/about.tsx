@@ -13,7 +13,7 @@ export function About({}: Props) {
 	return (
 		<section
 			className="flex flex-col sm:grid sm:min-h-screen sm:supports-[height:100svh]:min-h-svh lg:min-h-0 lg:grid-cols-2"
-			id="about-memecoin"
+			id="about"
 		>
 			<div className="select-none">
 				<picture>
@@ -36,14 +36,15 @@ export function About({}: Props) {
 					/>
 				</picture>
 			</div>
-			<div className="relative order-first flex items-center justify-center font-silkscreen text-[16px] leading-normal text-[#FDFDFD] sm:text-[18px] lg:order-last">
+			<div className="font-silkscreen relative order-first flex items-center justify-center text-[16px] leading-normal text-[#FDFDFD] sm:text-[18px] lg:order-last">
 				<AboutSplash />
-				<div className="m-auto p-4 pb-20 pt-25 sm:py-15 lg:p-5">
+				<div className="m-auto p-4 pt-25 pb-20 sm:py-15 lg:p-5">
 					<p className="max-w-[480px] text-center lg:text-left">
-						A memecoin is like a digital pet rock that gains value through
-						internet jokes and community hype, where owning one is as much about
-						participating in the meme culture as it is about potential financial
-						gains
+						Tokenator lets anyone deploy a Vara Fungible Token (VFT) on Vara
+						Network in a few clicks. Memecoin, utility token, DAO token, reward
+						program - you decide. The smart contract is deployed automatically,
+						and full ownership belongs to you. The platform never holds any
+						access to your token.
 					</p>
 				</div>
 			</div>

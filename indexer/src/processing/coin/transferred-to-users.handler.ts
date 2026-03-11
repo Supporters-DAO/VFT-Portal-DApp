@@ -1,5 +1,5 @@
 import { EntitiesService } from "../entities.service";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { ICoinEventHandler } from "./coin.handler";
 import { EventInfo } from "../event-info.type";
 import { Coin, Transfer } from "../../model";
@@ -14,28 +14,44 @@ export class TransferredToUsersHandler implements ICoinEventHandler {
   ): Promise<void> {
     const { from, to, amount } = event;
     const coin = await storage.getCoin(address);
+
     if (coin === undefined) {
       console.warn(`[TransferredToUsersHandler] ${address}: coin is not found`);
       return;
     }
+
     const fromBalance = await storage.getAccountBalance(from, coin);
-    const totalAmount = amount * BigInt(to.length);
-    const distributed = coin.distributed + totalAmount;
+    const isFromAdmin = coin.admins.includes(from);
+
+    let distributed = coin.distributed;
     let holders = coin.holders;
-    for (const address of to) {
+
+    for (const toAddress of to) {
       deductBalance(fromBalance, amount);
-      const toBalance = await storage.getAccountBalance(address, coin);
+
+      const isToAdmin = coin.admins.includes(toAddress);
+      const toBalance = await storage.getAccountBalance(toAddress, coin);
+
       if (toBalance.balance === BigInt(0)) {
         holders += 1;
       }
+
       toBalance.balance += amount;
+
       await storage.setAccountBalance(toBalance);
+
+      if (isFromAdmin && !isToAdmin) {
+        distributed += amount;
+      } else if (!isFromAdmin && isToAdmin) {
+        distributed -= amount;
+      }
+
       storage.addTransfer(
         new Transfer({
-          id: uuidv4(),
+          id: randomUUID(),
           coin: coin,
           from,
-          to: address,
+          to: toAddress,
           amount,
           blockNumber,
           timestamp,
@@ -43,16 +59,12 @@ export class TransferredToUsersHandler implements ICoinEventHandler {
         })
       );
     }
+
     if (fromBalance.balance === BigInt(0)) {
       holders -= 1;
     }
+
     await storage.setAccountBalance(fromBalance);
-    await storage.setCoin(
-      new Coin({
-        ...coin,
-        distributed: distributed,
-        holders,
-      })
-    );
+    await storage.setCoin(new Coin({ ...coin, distributed, holders }));
   }
 }
