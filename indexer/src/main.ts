@@ -10,6 +10,8 @@ import { BatchService } from "./processing/batch.service";
 import { getMemeFactoryEventsParser } from "./types/factory.events";
 import { getCoinEventsParser } from "./types/coin.events";
 import { isSailsEvent, isUserMessageSentEvent } from "./utils";
+import { getDnsService } from "./dns/dns.service";
+import { config } from "./config";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -20,16 +22,20 @@ BigInt.prototype["toJSON"] = function () {
 function getBlockDate(
   block: Block<{ block: { timestamp: boolean }; event: { args: boolean } }>
 ) {
-  return new Date(block.header.timestamp ?? new Date().getTime());
+  return new Date(block.header.timestamp ?? Date.now());
 }
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   const localStorage = await getLocalStorage(ctx.store);
+  const dnsService = await getDnsService(config.dnsApiUrl);
 
   const entitiesService = new EntitiesService(
     localStorage,
-    new BatchService(ctx.store)
+    new BatchService(ctx.store),
+    dnsService
   );
+
+  await entitiesService.init();
 
   const memeFactoryParser = await getMemeFactoryEventsParser();
   const coinParser = await getCoinEventsParser();

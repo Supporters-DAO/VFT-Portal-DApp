@@ -22,9 +22,8 @@ import { BurnedHandler } from "./coin/burned.handler";
 import { MintedHandler } from "./coin/minted.handler";
 import { HexString } from "../types";
 
-const factoryEventsToHandler: Record<
-  FactoryEventType,
-  IFactoryEventHandler | undefined
+const factoryEventsToHandler: Partial<
+  Record<FactoryEventType, IFactoryEventHandler>
 > = {
   [FactoryEventType.MemeCreated]: new MemeCreatedHandler(),
 };

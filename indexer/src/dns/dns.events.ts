@@ -1,4 +1,5 @@
 import { Sails, getFnNamePrefix, getServiceNamePrefix } from "sails-js";
+import { SailsIdlParser } from "sails-js-parser";
 import { readFileSync } from "fs";
 import { HexString } from "@gear-js/api";
 import { ContractInfo } from "./lib";
@@ -37,8 +38,8 @@ export class DnsEventsParser {
 
   async init() {
     const idl = readFileSync("./assets/dns.idl", "utf-8");
-    this.sails = await Sails.new();
-
+    const parser = await SailsIdlParser.new();
+    this.sails = new Sails(parser);
     this.sails.parseIdl(idl);
   }
 
@@ -46,13 +47,19 @@ export class DnsEventsParser {
     if (!this.sails) {
       throw new Error(`sails is not initialized`);
     }
+
     const serviceName = getServiceNamePrefix(payload);
     const functionName = getFnNamePrefix(payload);
-    if (!this.sails.services[serviceName].events[functionName]) {
+
+    const service = this.sails.services[serviceName];
+    const decoder = service?.events?.[functionName];
+
+    if (!decoder) {
       return undefined;
     }
-    const ev =
-      this.sails.services[serviceName].events[functionName].decode(payload);
+
+    const ev = decoder.decode(payload);
+
     switch (functionName) {
       case "ProgramIdChanged": {
         const event = ev as ContractInfoChangedPayload;
