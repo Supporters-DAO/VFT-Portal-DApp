@@ -116,7 +116,7 @@ function WalletModal({ onClose, open, setOpen }: WalletModalProps) {
 					A compatible wallet was not found or is disabled. Install it following
 					the{' '}
 					<a
-						href="https://wiki.vara.network/docs/account"
+						href="https://wiki.vara.network/docs/vara-network/account"
 						target="_blank"
 						rel="noreferrer"
 						className={styles.external}

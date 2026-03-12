@@ -81,7 +81,7 @@ const QA = [
 				<p>
 					Connect your{' '}
 					<Link
-						href="https://wiki.vara.network/docs/account"
+						href="https://wiki.vara.network/docs/vara-network/account"
 						className="link link-primary"
 						target="_blank"
 						rel="noreferrer"
