@@ -1,6 +1,7 @@
 {
 	"name": "tokenator",
 	"private": true,
+	"packageManager": "pnpm@10.24.0",
 	"scripts": {
 		"dev": "next dev --webpack",
 		"build": "next build --webpack",
@@ -67,5 +68,11 @@
 		"tailwindcss-animate": "1.0.7",
 		"tailwindcss-radix": "4.0.2",
 		"typescript": "5.9.3"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@parcel/watcher",
+			"sharp"
+		]
 	}
 }
