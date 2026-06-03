@@ -1,0 +1,122 @@
+name: Build and Deploy Tokenator
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
+    tags: ["*-v*"]
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: Target environment
+        required: false
+        options:
+          - dev
+          - stg
+          - prod
+      deploy_indexer:
+        type: boolean
+        description: Deploy indexer
+        default: true
+      deploy_explorer:
+        type: boolean
+        description: Deploy explorer
+        default: true
+      deploy_dapp:
+        type: boolean
+        description: Deploy frontend
+        default: true
+      deploy_pinata_proxy:
+        type: boolean
+        description: Deploy pinata-proxy
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+  actions: write
+  id-token: write
+
+jobs:
+  deploy_indexer:
+    uses: gear-ops/actions/.github/workflows/build-deploy.yaml@main
+    with:
+      argocd_server: ${{ vars.ARGOCD_SERVER }}
+      vault_server: ${{ vars.VAULT_SERVER }}
+      vault_role: supporters-dao-tokenator
+      app: tokenator
+      component: indexer
+      registry: ghcr.io/supporters-dao/tokenator-indexer
+      env: ${{ inputs.env }}
+      dockerfile: indexer/Dockerfile-indexer
+      context: indexer
+      paths_filter: |
+        indexer/**
+    secrets:
+      WORKLOADS_REPO_TOKEN: ${{ secrets.WORKLOADS_REPO_TOKEN }}
+      ARGOCD_TOKEN:         ${{ secrets.ARGOCD_TOKEN }}
+      VAULT_TOKEN_STATIC:   ${{ secrets.VAULT_TOKEN_STATIC }}
+
+  deploy_explorer:
+    uses: gear-ops/actions/.github/workflows/build-deploy.yaml@main
+    with:
+      argocd_server: ${{ vars.ARGOCD_SERVER }}
+      vault_server: ${{ vars.VAULT_SERVER }}
+      vault_role: supporters-dao-tokenator
+      app: tokenator
+      component: explorer
+      registry: ghcr.io/supporters-dao/tokenator-explorer
+      env: ${{ inputs.env }}
+      dockerfile: indexer/Dockerfile-explorer
+      context: indexer
+      paths_filter: |
+        indexer/**
+    secrets:
+      WORKLOADS_REPO_TOKEN: ${{ secrets.WORKLOADS_REPO_TOKEN }}
+      ARGOCD_TOKEN:         ${{ secrets.ARGOCD_TOKEN }}
+      VAULT_TOKEN_STATIC:   ${{ secrets.VAULT_TOKEN_STATIC }}
+
+  deploy_dapp:
+    uses: gear-ops/actions/.github/workflows/build-deploy.yaml@main
+    with:
+      argocd_server: ${{ vars.ARGOCD_SERVER }}
+      vault_server: ${{ vars.VAULT_SERVER }}
+      vault_role: supporters-dao-tokenator
+      app: tokenator
+      component: dapp
+      registry: ghcr.io/supporters-dao/tokenator-dapp
+      env: ${{ inputs.env }}
+      dockerfile: frontend/Dockerfile
+      context: frontend
+      paths_filter: |
+        frontend/**
+    secrets:
+      WORKLOADS_REPO_TOKEN: ${{ secrets.WORKLOADS_REPO_TOKEN }}
+      ARGOCD_TOKEN:         ${{ secrets.ARGOCD_TOKEN }}
+      VAULT_TOKEN_STATIC:   ${{ secrets.VAULT_TOKEN_STATIC }}
+
+  deploy_pinata_proxy:
+    uses: gear-ops/actions/.github/workflows/build-deploy.yaml@main
+    with:
+      argocd_server: ${{ vars.ARGOCD_SERVER }}
+      vault_server: ${{ vars.VAULT_SERVER }}
+      vault_role: supporters-dao-tokenator
+      app: tokenator
+      component: pinata-proxy
+      registry: ghcr.io/supporters-dao/tokenator-pinata-proxy
+      env: ${{ inputs.env }}
+      dockerfile: pinata-proxy/Dockerfile
+      context: pinata-proxy
+      paths_filter: |
+        pinata-proxy/**
+    secrets:
+      WORKLOADS_REPO_TOKEN: ${{ secrets.WORKLOADS_REPO_TOKEN }}
+      ARGOCD_TOKEN:         ${{ secrets.ARGOCD_TOKEN }}
+      VAULT_TOKEN_STATIC:   ${{ secrets.VAULT_TOKEN_STATIC }}
