@@ -12,7 +12,7 @@ WORKDIR /app
 RUN npm i @types/node
 RUN npm i @types/multer
 COPY ["package.json", "package-lock.json", "./"]
-RUN npm install
+RUN npm install --include=dev
 
 COPY ["tsconfig.json",  "tsconfig.build.json", "./"]
 COPY ./src ./src/
