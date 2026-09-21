@@ -80,7 +80,9 @@ processor.run(
         txHash: id,
       };
 
-      if (localStorage.getFactory().address === source) {
+      const factory = localStorage.getFactory();
+
+      if (factory.address === source || factory.id === source) {
         await processing.handleFactoryEvent(payload, eventInfo);
       } else {
         const coin = await localStorage.getCoin(source);
