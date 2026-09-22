@@ -21,7 +21,7 @@ const executeTransaction = async (
 ) => {
 	transaction.withAccount(account.address, { signer: account.signer })
 	transaction.withValue(BigInt(1e12))
-	await transaction.calculateGas()
+	await transaction.calculateGas(true, 10)
 
 	const { msgId, blockHash, response } = await transaction.signAndSend()
 
