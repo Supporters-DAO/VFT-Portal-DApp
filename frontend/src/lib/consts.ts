@@ -21,7 +21,7 @@ export const ADDRESS = {
 export const CONTRACT_ADDRESS = {
 	ADDRESS: publicEnv(
 		process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-		'0x31052d03bb8d88d259bd0ebeaa1b7732ff81f6e571a6602305d788ce1c12b932',
+		'0x729fa6dda815fd49bb4cae215a9904edd3c4d941ed51448eeca94ef2f69fd6a3',
 	) as HexString,
 }
 
