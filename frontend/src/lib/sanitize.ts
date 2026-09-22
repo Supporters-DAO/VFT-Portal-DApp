@@ -21,5 +21,11 @@ export function getSafeImageSrc(
 	if (!value) return fallback
 
 	const safeUrl = getSafeHttpsUrl(value)
-	return safeUrl ?? fallback
+	if (!safeUrl) return fallback
+
+	const url = new URL(safeUrl)
+	if (url.hostname === 'sapphire-advisory-bird-981.mypinata.cloud') {
+		url.hostname = 'gateway.pinata.cloud'
+	}
+	return url.toString()
 }
